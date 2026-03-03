@@ -1,5 +1,3 @@
-
-
 // ════════════════════════════════════════════════════
 //  BASE DE DATOS — localStorage
 // ════════════════════════════════════════════════════
@@ -10,7 +8,7 @@ const DEFAULTS = [
   {id:2,titulo:"Alcaldía de Jamundí anuncia plan de obras para 2026",categoria:"POLÍTICA",autor:"Carlos Ruiz",fecha:"27 de febrero de 2026",tiempoLectura:"5 min",imagen:"radio jamundi logo.png",resumen:"El alcalde presentó un plan de $45.000 millones en vías, parques y acueductos.",cuerpo:"<p>El alcalde de Jamundí presentó el Plan de Obras 2026, una inversión de $45.000 millones para mejorar la infraestructura municipal.</p><p>Incluye pavimentación de 18 km de vías, dos parques biosaludables y ampliación del acueducto en la zona alta.</p><h3>Inversión por sectores</h3><p>40% vial, 25% saneamiento básico, 20% equipamientos comunitarios, 15% conectividad digital.</p><blockquote>\"Jamundí merece obras de calidad. Cada peso bajo estricta vigilancia ciudadana.\" — Alcalde de Jamundí</blockquote>",tags:["política","obras","alcaldía","jamundí"],relacionados:[1,4,7]},
   {id:3,titulo:"Deportivo Cali cierra fichajes para el segundo semestre",categoria:"DEPORTES",autor:"Juan López",fecha:"27 de febrero de 2026",tiempoLectura:"3 min",imagen:"radio jamundi logo.png",resumen:"El equipo verdiblanco confirmó tres nuevas contrataciones de cara a la Liga BetPlay 2026.",cuerpo:"<p>El Deportivo Cali confirmó tres nuevos fichajes: el delantero uruguayo Matías Fernández, el mediocampista venezolano Carlos Medina y el portero James Ospino del Junior de Barranquilla.</p><blockquote>\"Llegan jugadores con hambre de triunfo. Estamos construyendo algo importante.\" — Director técnico Deportivo Cali</blockquote><p>Presentación oficial el próximo lunes en el Estadio Deportivo Cali. El equipo debuta el 8 de marzo visitando a Nacional.</p>",tags:["deportes","fútbol","deportivo cali"],relacionados:[8,9,10]},
   {id:4,titulo:"Colombia hoy: las decisiones más importantes del día",categoria:"NOTICIAS",autor:"Redacción Noticias",fecha:"27 de febrero de 2026",tiempoLectura:"6 min",imagen:"radio jamundi logo.png",resumen:"Resumen de los eventos más importantes que marcaron la agenda nacional hoy.",cuerpo:"<p>Este viernes estuvo marcado por decisiones clave en lo político, económico y social.</p><h3>En el ámbito político</h3><p>El Congreso aprobó la ley de trabajo remoto que beneficia a más de 2 millones de colombianos.</p><h3>En economía</h3><p>El Banco de la República anunció inflación de 4,2% anual, la más baja en tres años.</p><blockquote>\"Los indicadores muestran una economía que se recupera de forma sostenida.\" — Gerente Banco de la República</blockquote><h3>En seguridad</h3><p>Reducción del 15% en índices de violencia en las principales ciudades durante enero.</p>",tags:["colombia","noticias","nacional","economía"],relacionados:[1,2,7]},
-  {id:5,titulo:"Valle del Cauca crece un 12% en exportaciones agroindustriales",categoria:"NEGOCIOS",autor:"Redacción Económica",fecha:"26 de febrero de 2026",tiempoLectura:"4 min",imagen:"radio jamundi logo.png",resumen:"Azúcar, papel y confitería lideran las ventas externas del departamento en el primer bimestre.",cuerpo:"<p>El Valle del Cauca reportó un incremento del 12% en exportaciones agroindustriales en los primeros dos meses de 2026, según la Cámara de Comercio de Cali.</p><h3>Destinos principales</h3><p>Estados Unidos, Ecuador y Perú lideran, con nuevo crecimiento hacia Vietnam y Malasia.</p><blockquote>\"La diversificación de mercados es clave para la sostenibilidad de nuestro sector.\" — Presidente Cámara de Comercio de Cali</blockquote>",tags:["economía","exportaciones","valle del cauca"],relacionados:[4,2,6]},
+  {id:5,titulo:"Valle del Cauca crece un 12% en exportaciones agroindustriales",categoria:"NOTICIAS",autor:"Redacción Económica",fecha:"26 de febrero de 2026",tiempoLectura:"4 min",imagen:"radio jamundi logo.png",resumen:"Azúcar, papel y confitería lideran las ventas externas del departamento en el primer bimestre.",cuerpo:"<p>El Valle del Cauca reportó un incremento del 12% en exportaciones agroindustriales en los primeros dos meses de 2026, según la Cámara de Comercio de Cali.</p><h3>Destinos principales</h3><p>Estados Unidos, Ecuador y Perú lideran, con nuevo crecimiento hacia Vietnam y Malasia.</p><blockquote>\"La diversificación de mercados es clave para la sostenibilidad de nuestro sector.\" — Presidente Cámara de Comercio de Cali</blockquote>",tags:["economía","exportaciones","valle del cauca"],relacionados:[4,2,6]},
   {id:6,titulo:"Festival Petronio Álvarez regresa a Cali con más de 400 grupos",categoria:"CULTURA",autor:"Redacción Cultura",fecha:"27 de febrero de 2026",tiempoLectura:"3 min",imagen:"radio jamundi logo.png",resumen:"La gran fiesta de la música del Pacífico se realizará del 12 al 17 de agosto. Entrada gratuita.",cuerpo:"<p>El Festival Petronio Álvarez 2026 se realizará del 12 al 17 de agosto en el Estadio Pascual Guerrero, con más de 400 agrupaciones de Chocó, Valle, Cauca y Nariño.</p><h3>Categorías en competencia</h3><p>Marimba, chirimía, violines caucanos, versión libre y agrupación libre. Nuevo espacio para la diáspora afrocolombiana.</p><blockquote>\"El Petronio es la fiesta más grande de la cultura afrocolombiana.\" — Directora del Festival</blockquote><p>Inscripciones hasta el 30 de abril. Entrada gratuita en todos los escenarios.</p>",tags:["cultura","música","petronio álvarez","cali"],relacionados:[11,12,13]},
   {id:7,titulo:"Congreso aprueba ley de trabajo remoto",categoria:"POLÍTICA",autor:"Redacción Política",fecha:"26 de febrero de 2026",tiempoLectura:"4 min",imagen:"radio jamundi logo.png",resumen:"La normativa regula el teletrabajo y los derechos de más de 2 millones de trabajadores.",cuerpo:"<p>El Congreso aprobó la ley de trabajo remoto, vigente desde el 1 de abril de 2026.</p><h3>Puntos clave</h3><p>Derecho a desconexión digital, gastos de internet a cargo del empleador e igualdad salarial presencial-remoto.</p><blockquote>\"Los trabajadores remotos merecen los mismos derechos que los presenciales.\" — Ponente del proyecto</blockquote>",tags:["política","congreso","trabajo remoto"],relacionados:[4,2,5]},
   {id:8,titulo:"Liga BetPlay 2026: arranque del segundo semestre",categoria:"DEPORTES",autor:"Redacción Deportes",fecha:"26 de febrero de 2026",tiempoLectura:"3 min",imagen:"radio jamundi logo.png",resumen:"Deportivo Cali debuta el 8 de marzo visitando a Atlético Nacional.",cuerpo:"<p>La Dimayor confirmó el fixture del segundo semestre de la Liga BetPlay 2026. Arranca el 8 de marzo con el clásico Nacional vs Cali en el Atanasio Girardot.</p><blockquote>\"Este semestre tendremos un torneo muy parejo.\" — Presidente de la Dimayor</blockquote><p>La final está programada para junio de 2026.</p>",tags:["deportes","fútbol","liga betplay"],relacionados:[3,9,10]},
@@ -47,7 +45,6 @@ function dbGetById(id) {
 
 function dbSave(art) {
   const todos = dbGetAll();
-  // Si no tiene id o id es 0/null → artículo NUEVO
   if (!art.id) {
     art.id = todos.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
     todos.unshift(art);
@@ -65,7 +62,7 @@ function dbDelete(id) {
   localStorage.setItem(DB_KEY, JSON.stringify(todos));
 }
 
-const CATS_DB = ["SALUD","POLÍTICA","DEPORTES","CULTURA","NOTICIAS","NEGOCIOS","REGIONAL","NACIONAL","EVENTOS"];
+const CATS_DB = ["POLÍTICA","DEPORTES","CULTURA","NOTICIAS"];
 
 // ════════════════════════════════════════════════════
 //  RENDERIZADO DINÁMICO
@@ -73,34 +70,72 @@ const CATS_DB = ["SALUD","POLÍTICA","DEPORTES","CULTURA","NOTICIAS","NEGOCIOS",
 function renderHome() {
   const todos = dbGetAll();
 
-  // Sidebar hero
+  // ── HERO IZQUIERDO: tarjetas de noticias (reemplaza el reproductor) ──
+  const heroFeat = document.getElementById('heroFeaturedNews');
+  if (heroFeat && todos.length > 0) {
+    const a = todos[0];
+    heroFeat.onclick = () => openArticle(a.id);
+    heroFeat.innerHTML = `
+      <img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'">
+      <div class="rj_hero_big_overlay"></div>
+      <span class="rj_hero_big_cat">${a.categoria}</span>
+      <div class="rj_hero_big_body">
+        <h2 class="rj_hero_big_title">${a.titulo}</h2>
+      </div>`;
+  }
+
+  // ── SIDEBAR: lista numerada (top 5) ──
   const side = document.getElementById('heroSide');
   if (side) {
-    side.innerHTML = todos.slice(0,5).map((a,i) => `
-      <div class="side_item" onclick="openArticle(${a.id})" style="cursor:pointer">
-        <div class="side_item_num">${String(i+1).padStart(2,'0')}</div>
-        <div class="side_item_body">
-          <div class="side_item_title">${a.titulo}</div>
-          <div class="side_item_desc">${a.resumen.substring(0,70)}${a.resumen.length>70?'…':''}</div>
-          <div class="site_item_date">${a.fecha}</div>
+    side.innerHTML = todos.slice(1,4).map(a => `
+      <div class="rj_side_item" onclick="openArticle(${a.id})">
+        <div class="rj_side_img">
+          <img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'">
+        </div>
+        <div class="rj_side_body">
+          <span class="rj_side_cat">${a.categoria}</span>
+          <div class="rj_side_title">${a.titulo}</div>
+          <div class="rj_side_date">${a.fecha}</div>
         </div>
       </div>`).join('');
   }
 
-  // Grid últimas noticias
-  const grid = document.getElementById('homeNewsGrid');
-  if (grid) {
-    grid.innerHTML = todos.slice(0,3).map(a => `
+  // homeNewsGrid removed — carousel handles all articles
+
+  // ── SECCIÓN TODAS LAS NOTICIAS (acumulativa, NUNCA se recorta) ──
+  const allGrid = document.getElementById('allNewsGrid');
+  if (allGrid) {
+    if (typeof _carouselIndex !== 'undefined') { _carouselIndex = 0; }
+    allGrid.style.transform = 'translateX(0)';
+    allGrid.innerHTML = todos.map(a => `
+      <div class="rj_card" onclick="openArticle(${a.id})">
+        <div class="rj_card_img">
+          <img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'">
+        </div>
+        <div class="rj_card_cat">${a.categoria}</div>
+        <div class="rj_card_title">${a.titulo}</div>
+        <div class="rj_card_meta">${a.autor} · ${a.fecha}</div>
+      </div>`).join('');
+    const cnt = document.getElementById('allNewsCount');
+    if (cnt) cnt.textContent = todos.length + ' artículo' + (todos.length !== 1 ? 's' : '');
+  }
+
+  // ── PÁGINA TODAS: grid de navegación (también acumulativo) ──
+  const allGridPage = document.getElementById('allNewsGridPage');
+  if (allGridPage) {
+    allGridPage.innerHTML = todos.map(a => `
       <div class="news_card" onclick="openArticle(${a.id})" style="cursor:pointer">
         <div><img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'"></div>
         <div class="new_card_cat">${a.categoria}</div>
         <div class="new_card_title"><span>${a.titulo}</span></div>
-        <p class="card_text">${a.resumen.substring(0,100)}${a.resumen.length>100?'…':''}</p>
+        <p class="card_text">${a.resumen ? a.resumen.substring(0,100)+(a.resumen.length>100?'…':'') : ''}</p>
         <div class="autor">${a.autor} · ${a.fecha}</div>
       </div>`).join('');
+    const cntNav = document.getElementById('allNewsCountNav');
+    if (cntNav) cntNav.textContent = todos.length + ' artículo' + (todos.length !== 1 ? 's' : '');
   }
 
-  // Grids de categoría
+  // ── GRIDS DE CATEGORÍA ──
   const mapGrid = {
     gridNoticias: ['NOTICIAS'],
     gridDeportes: ['DEPORTES'],
@@ -147,14 +182,12 @@ function openArticle(id) {
   const art = dbGetById(id);
   if (!art) { alert('Artículo no encontrado. ID: '+id); return; }
 
-  // Guardar página anterior
-  const vis = [...document.querySelectorAll('.homePage,.page_cat')].find(el=>el.offsetParent!==null);
-  sessionStorage.setItem('paginaAnterior', vis ? vis.id||'home' : 'home');
+  const vis = [...document.querySelectorAll('.homePage,.page_cat')]
+    .find(el=>el.offsetParent!==null);
+  sessionStorage.setItem('paginaAnterior', vis ? vis.id || 'homePage' : 'homePage');
 
-  // Ocultar todo
   document.querySelectorAll('.homePage,.page_cat,#adminPage').forEach(el=>el.style.display='none');
 
-  // Relacionados
   const rels = (art.relacionados||[]).map(rid=>dbGetById(rid)).filter(Boolean);
   const relHTML = rels.length
     ? rels.map(r=>`<div class="art-rel-card" onclick="openArticle(${r.id})"><div class="art-rel-img"><img src="${r.imagen}" onerror="this.src='radio jamundi logo.png'"><span class="art-rel-cat">${r.categoria}</span></div><div class="art-rel-body"><div class="art-rel-title">${r.titulo}</div><div class="art-rel-meta">${r.autor} · ${r.fecha}</div></div></div>`).join('')
@@ -200,7 +233,7 @@ function openArticle(id) {
 
 function closeArticle() {
   document.getElementById('articlePage').style.display = 'none';
-  const ant = sessionStorage.getItem('paginaAnterior')||'home';
+  const ant = sessionStorage.getItem('paginaAnterior') || 'homePage';
   if (ant === 'home' || ant === 'homePage') {
     document.querySelector('.homePage').style.display = 'block';
   } else {
@@ -212,7 +245,8 @@ function closeArticle() {
 }
 
 function mostrarCat(cat) {
-  const map = {NOTICIAS:'catNoticias',SALUD:'catNoticias',NEGOCIOS:'catNoticias',REGIONAL:'catNoticias',NACIONAL:'catNoticias',EVENTOS:'catNoticias',DEPORTES:'catDeportes',CULTURA:'catCultura','POLÍTICA':'catPolitica'};
+  document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el=>el.style.display='none');
+  const map = {NOTICIAS:'catNoticias',DEPORTES:'catDeportes',CULTURA:'catCultura',POLÍTICA:'catPolitica'};
   const id = map[cat];
   if (id) { document.getElementById(id).style.display='block'; }
   else { document.querySelector('.homePage').style.display='block'; }
@@ -224,7 +258,7 @@ function mostrarCat(cat) {
 function showHome(seccion) {
   document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el=>el.style.display='none');
   if (!seccion) { document.querySelector('.homePage').style.display='block'; return; }
-  const map = {noticias:'catNoticias',deportes:'catDeportes',cultura:'catCultura',politica:'catPolitica'};
+  const map = {noticias:'catNoticias',deportes:'catDeportes',cultura:'catCultura',politica:'catPolitica',todas:'catTodas'};
   const el = document.getElementById(map[seccion]);
   if (el) el.style.display = 'block';
 }
@@ -238,7 +272,7 @@ function setActive(el) {
 //  PANEL DE ADMINISTRACIÓN
 // ════════════════════════════════════════════════════
 const ADMIN_PASS = 'jamundi2026';
-let _art = null; // artículo en edición
+let _art = null;
 
 function abrirAdmin() {
   const clave = prompt('🔐 Contraseña de administrador:');
@@ -428,7 +462,7 @@ function adminGuardar() {
 
   const guardado = dbSave(_art);
   _art = null;
-  renderHome();     // ← actualiza el index inmediatamente
+  renderHome();
   adminLista();
   rjToast('✓ Artículo #'+guardado.id+' guardado.');
 }
