@@ -1,6 +1,8 @@
 // ════════════════════════════════════════════════════
 //  BASE DE DATOS — localStorage
+//  (Funciona correctamente en hosting/cPanel)
 // ════════════════════════════════════════════════════
+
 const DB_KEY = 'rj_articulos_v3';
 
 const DEFAULTS = [
@@ -20,7 +22,7 @@ const DEFAULTS = [
   {id:14,titulo:"Sabores del Valle: los mejores platos de nuestra cocina",categoria:"CULTURA",autor:"Redacción Cultura",fecha:"23 de febrero de 2026",tiempoLectura:"4 min",imagen:"radio jamundi logo.png",resumen:"Chuleta valluna, sancocho de gallina y aborrajados encabezan los platos más representativos.",cuerpo:"<p>La gastronomía del Valle fusiona tradiciones indígenas, africanas y españolas. La chuleta valluna es el plato emblema: cerdo apanado y frito con arroz, frijoles y patacones.</p><h3>El sancocho de gallina criolla</h3><p>Preparado en fogón de leña con gallina criolla, yuca, plátano y mazorca. Es reunión familiar, domingo en el campo.</p><blockquote>\"Nuestra cocina es nuestra historia.\" — Chef vallecaucana</blockquote>",tags:["cultura","gastronomía","valle del cauca"],relacionados:[6,11,12]}
 ];
 
-// ── API ────────────────────────────────────────────────
+// ── API con localStorage ───────────────────────────────
 function dbGetAll() {
   try {
     const raw = localStorage.getItem(DB_KEY);
@@ -51,7 +53,10 @@ function dbSave(art) {
   } else {
     const idx = todos.findIndex(a => a.id === Number(art.id));
     if (idx !== -1) todos[idx] = art;
-    else { art.id = todos.reduce((m,a)=>Math.max(m,a.id||0),0)+1; todos.unshift(art); }
+    else {
+      art.id = todos.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
+      todos.unshift(art);
+    }
   }
   localStorage.setItem(DB_KEY, JSON.stringify(todos));
   return art;
@@ -62,7 +67,7 @@ function dbDelete(id) {
   localStorage.setItem(DB_KEY, JSON.stringify(todos));
 }
 
-const CATS_DB = ["POLÍTICA","DEPORTES","CULTURA","NOTICIAS"];
+const CATS_DB = ["NOTICIAS", "POLÍTICA", "DEPORTES", "CULTURA", ];
 
 // ════════════════════════════════════════════════════
 //  RENDERIZADO DINÁMICO
@@ -70,7 +75,7 @@ const CATS_DB = ["POLÍTICA","DEPORTES","CULTURA","NOTICIAS"];
 function renderHome() {
   const todos = dbGetAll();
 
-  // ── HERO IZQUIERDO: tarjetas de noticias (reemplaza el reproductor) ──
+  // ── HERO PRINCIPAL ──
   const heroFeat = document.getElementById('heroFeaturedNews');
   if (heroFeat && todos.length > 0) {
     const a = todos[0];
@@ -84,10 +89,10 @@ function renderHome() {
       </div>`;
   }
 
-  // ── SIDEBAR: lista numerada (top 5) ──
+  // ── SIDEBAR (3 noticias) ──
   const side = document.getElementById('heroSide');
   if (side) {
-    side.innerHTML = todos.slice(1,4).map(a => `
+    side.innerHTML = todos.slice(1, 4).map(a => `
       <div class="rj_side_item" onclick="openArticle(${a.id})">
         <div class="rj_side_img">
           <img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'">
@@ -100,12 +105,10 @@ function renderHome() {
       </div>`).join('');
   }
 
-  // homeNewsGrid removed — carousel handles all articles
-
-  // ── SECCIÓN TODAS LAS NOTICIAS (acumulativa, NUNCA se recorta) ──
+  // ── CARRUSEL ──
   const allGrid = document.getElementById('allNewsGrid');
   if (allGrid) {
-    if (typeof _carouselIndex !== 'undefined') { _carouselIndex = 0; }
+    _carouselIndex = 0;
     allGrid.style.transform = 'translateX(0)';
     allGrid.innerHTML = todos.map(a => `
       <div class="rj_card" onclick="openArticle(${a.id})">
@@ -118,9 +121,10 @@ function renderHome() {
       </div>`).join('');
     const cnt = document.getElementById('allNewsCount');
     if (cnt) cnt.textContent = todos.length + ' artículo' + (todos.length !== 1 ? 's' : '');
+    setTimeout(() => carouselScroll(0), 100);
   }
 
-  // ── PÁGINA TODAS: grid de navegación (también acumulativo) ──
+  // ── PÁGINA TODAS ──
   const allGridPage = document.getElementById('allNewsGridPage');
   if (allGridPage) {
     allGridPage.innerHTML = todos.map(a => `
@@ -128,7 +132,7 @@ function renderHome() {
         <div><img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'"></div>
         <div class="new_card_cat">${a.categoria}</div>
         <div class="new_card_title"><span>${a.titulo}</span></div>
-        <p class="card_text">${a.resumen ? a.resumen.substring(0,100)+(a.resumen.length>100?'…':'') : ''}</p>
+        <p class="card_text">${a.resumen ? a.resumen.substring(0, 100) + (a.resumen.length > 100 ? '…' : '') : ''}</p>
         <div class="autor">${a.autor} · ${a.fecha}</div>
       </div>`).join('');
     const cntNav = document.getElementById('allNewsCountNav');
@@ -146,7 +150,10 @@ function renderHome() {
     const el = document.getElementById(gridId);
     if (!el) return;
     const arts = todos.filter(a => cats.includes(a.categoria));
-    if (!arts.length) { el.innerHTML = '<p style="color:#555;padding:40px;text-align:center">No hay artículos en esta categoría aún.</p>'; return; }
+    if (!arts.length) {
+      el.innerHTML = '<p style="color:#555;padding:40px;text-align:center">No hay artículos en esta categoría aún.</p>';
+      return;
+    }
     const [dest, ...resto] = arts;
     let html = `
       <div class="cat_card featured" onclick="openArticle(${dest.id})" style="cursor:pointer">
@@ -158,15 +165,15 @@ function renderHome() {
           <div class="autor">${dest.fecha} · ${dest.autor}</div>
         </div>
       </div>`;
-    for (let i=0; i<resto.length; i+=2) {
-      const par = resto.slice(i,i+2);
-      html += `<div class="cat_subgrid">${par.map(a=>`
+    for (let i = 0; i < resto.length; i += 2) {
+      const par = resto.slice(i, i + 2);
+      html += `<div class="cat_subgrid">${par.map(a => `
         <div class="cat_card" onclick="openArticle(${a.id})" style="cursor:pointer">
           <div class="cat_card_img"><img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'"></div>
           <div class="cat_card_body">
             <div class="cat_card_cat">${a.categoria}</div>
             <div class="cat_card_title">${a.titulo}</div>
-            <p class="cat_card_text">${a.resumen.substring(0,90)}…</p>
+            <p class="cat_card_text">${a.resumen.substring(0, 90)}…</p>
             <div class="autor">${a.fecha}</div>
           </div>
         </div>`).join('')}</div>`;
@@ -180,20 +187,20 @@ function renderHome() {
 // ════════════════════════════════════════════════════
 function openArticle(id) {
   const art = dbGetById(id);
-  if (!art) { alert('Artículo no encontrado. ID: '+id); return; }
+  if (!art) { alert('Artículo no encontrado. ID: ' + id); return; }
 
   const vis = [...document.querySelectorAll('.homePage,.page_cat')]
-    .find(el=>el.offsetParent!==null);
+    .find(el => el.offsetParent !== null);
   sessionStorage.setItem('paginaAnterior', vis ? vis.id || 'homePage' : 'homePage');
 
-  document.querySelectorAll('.homePage,.page_cat,#adminPage').forEach(el=>el.style.display='none');
+  document.querySelectorAll('.homePage,.page_cat,#adminPage').forEach(el => el.style.display = 'none');
 
-  const rels = (art.relacionados||[]).map(rid=>dbGetById(rid)).filter(Boolean);
+  const rels = (art.relacionados || []).map(rid => dbGetById(rid)).filter(Boolean);
   const relHTML = rels.length
-    ? rels.map(r=>`<div class="art-rel-card" onclick="openArticle(${r.id})"><div class="art-rel-img"><img src="${r.imagen}" onerror="this.src='radio jamundi logo.png'"><span class="art-rel-cat">${r.categoria}</span></div><div class="art-rel-body"><div class="art-rel-title">${r.titulo}</div><div class="art-rel-meta">${r.autor} · ${r.fecha}</div></div></div>`).join('')
+    ? rels.map(r => `<div class="art-rel-card" onclick="openArticle(${r.id})"><div class="art-rel-img"><img src="${r.imagen}" onerror="this.src='radio jamundi logo.png'"><span class="art-rel-cat">${r.categoria}</span></div><div class="art-rel-body"><div class="art-rel-title">${r.titulo}</div><div class="art-rel-meta">${r.autor} · ${r.fecha}</div></div></div>`).join('')
     : '<p class="art-no-rel">No hay artículos relacionados.</p>';
 
-  const tagsHTML = (art.tags||[]).map(t=>`<span class="art-tag">#${t}</span>`).join('');
+  const tagsHTML = (art.tags || []).map(t => `<span class="art-tag">#${t}</span>`).join('');
 
   const pg = document.getElementById('articlePage');
   pg.innerHTML = `
@@ -201,7 +208,7 @@ function openArticle(id) {
       <div class="article-breadcrumb">
         <a onclick="closeArticle()">Inicio</a><span>›</span>
         <a onclick="closeArticle();mostrarCat('${art.categoria}')">${art.categoria}</a><span>›</span>
-        <span>${art.titulo.substring(0,45)}${art.titulo.length>45?'…':''}</span>
+        <span>${art.titulo.substring(0, 45)}${art.titulo.length > 45 ? '…' : ''}</span>
       </div>
       <div class="article-top-tag">${art.categoria}</div>
       <h1 class="article-title">${art.titulo}</h1>
@@ -209,7 +216,7 @@ function openArticle(id) {
       <div class="article-meta">
         <span class="author">✍ ${art.autor}</span>
         <span style="color:#2e2e2e">·</span>
-        <span>🕐 ${art.tiempoLectura||'3 min'}</span>
+        <span>🕐 ${art.tiempoLectura || '3 min'}</span>
         <span style="color:#2e2e2e">·</span>
         <span>📅 ${art.fecha}</span>
       </div>
@@ -228,7 +235,7 @@ function openArticle(id) {
       </div>
     </section>`;
   pg.style.display = 'block';
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function closeArticle() {
@@ -241,30 +248,30 @@ function closeArticle() {
     if (el) el.style.display = 'block';
     else document.querySelector('.homePage').style.display = 'block';
   }
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function mostrarCat(cat) {
-  document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el=>el.style.display='none');
-  const map = {NOTICIAS:'catNoticias',DEPORTES:'catDeportes',CULTURA:'catCultura',POLÍTICA:'catPolitica'};
+  document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el => el.style.display = 'none');
+  const map = { NOTICIAS: 'catNoticias', DEPORTES: 'catDeportes', CULTURA: 'catCultura', POLÍTICA: 'catPolitica' };
   const id = map[cat];
-  if (id) { document.getElementById(id).style.display='block'; }
-  else { document.querySelector('.homePage').style.display='block'; }
+  if (id) document.getElementById(id).style.display = 'block';
+  else document.querySelector('.homePage').style.display = 'block';
 }
 
 // ════════════════════════════════════════════════════
 //  NAVEGACIÓN
 // ════════════════════════════════════════════════════
 function showHome(seccion) {
-  document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el=>el.style.display='none');
-  if (!seccion) { document.querySelector('.homePage').style.display='block'; return; }
-  const map = {noticias:'catNoticias',deportes:'catDeportes',cultura:'catCultura',politica:'catPolitica',todas:'catTodas'};
+  document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el => el.style.display = 'none');
+  if (!seccion) { document.querySelector('.homePage').style.display = 'block'; return; }
+  const map = { noticias: 'catNoticias', deportes: 'catDeportes', cultura: 'catCultura', politica: 'catPolitica', todas: 'catTodas' };
   const el = document.getElementById(map[seccion]);
   if (el) el.style.display = 'block';
 }
 function goHome() { showHome(); }
 function setActive(el) {
-  document.querySelectorAll('.nav_linka a').forEach(a=>a.classList.remove('active'));
+  document.querySelectorAll('.nav_linka a').forEach(a => a.classList.remove('active'));
   el.classList.add('active');
 }
 
@@ -278,7 +285,7 @@ function abrirAdmin() {
   const clave = prompt('🔐 Contraseña de administrador:');
   if (clave === null) return;
   if (clave !== ADMIN_PASS) { alert('Contraseña incorrecta.'); return; }
-  document.querySelectorAll('.homePage,.page_cat,#articlePage').forEach(el=>el.style.display='none');
+  document.querySelectorAll('.homePage,.page_cat,#articlePage').forEach(el => el.style.display = 'none');
   document.getElementById('adminPage').style.display = 'block';
   adminLista();
 }
@@ -288,7 +295,7 @@ function cerrarAdmin() {
   _art = null;
   renderHome();
   document.querySelector('.homePage').style.display = 'block';
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function adminLista() {
@@ -297,7 +304,7 @@ function adminLista() {
   const pg = document.getElementById('adminPage');
 
   const filas = todos.length
-    ? todos.map(a=>`
+    ? todos.map(a => `
         <tr onmouseover="this.style.background='#121212'" onmouseout="this.style.background=''">
           <td style="padding:12px 14px;font-family:monospace;font-size:.75em;color:#444">#${a.id}</td>
           <td style="padding:12px 14px"><span style="background:#1e1e1e;border:1px solid #2a2a2a;color:#c8b890;font-size:.62em;letter-spacing:.14em;font-weight:700;padding:3px 9px;border-radius:2px;text-transform:uppercase">${a.categoria}</span></td>
@@ -318,7 +325,7 @@ function adminLista() {
         <div style="width:38px;height:38px;background:#c8b890;color:#111;font-weight:900;display:flex;align-items:center;justify-content:center;border-radius:3px;font-size:.9em">RJ</div>
         <div>
           <div style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0ece0">Panel de Administración</div>
-          <div style="font-size:.72em;color:#555">${todos.length} artículo${todos.length!==1?'s':''}</div>
+          <div style="font-size:.72em;color:#555">${todos.length} artículo${todos.length !== 1 ? 's' : ''}</div>
         </div>
       </div>
       <div style="display:flex;gap:10px">
@@ -342,14 +349,14 @@ function adminLista() {
 }
 
 function adminNuevo() {
-  _art = {id:null,titulo:'',categoria:'NOTICIAS',autor:'',fecha:_hoy(),tiempoLectura:'3 min',imagen:'radio jamundi logo.png',resumen:'',cuerpo:'',tags:[],relacionados:[]};
+  _art = { id: null, titulo: '', categoria: 'NOTICIAS', autor: '', fecha: _hoy(), tiempoLectura: '3 min', imagen: '', resumen: '', cuerpo: '', tags: [], relacionados: [] };
   adminEditor();
 }
 
 function adminEditar(id) {
   const a = dbGetById(id);
-  if (!a) { rjToast('Artículo no encontrado','err'); return; }
-  _art = {...a, tags:[...(a.tags||[])], relacionados:[...(a.relacionados||[])]};
+  if (!a) { rjToast('Artículo no encontrado', 'err'); return; }
+  _art = { ...a, tags: [...(a.tags || [])], relacionados: [...(a.relacionados || [])] };
   adminEditor();
 }
 
@@ -367,24 +374,24 @@ function adminEditor() {
   const esNuevo = !a.id;
   const pg = document.getElementById('adminPage');
 
-  const opCat = CATS_DB.map(c=>`<option value="${c}"${c===a.categoria?' selected':''}>${c}</option>`).join('');
+  const opCat = CATS_DB.map(c => `<option value="${c}"${c === a.categoria ? ' selected' : ''}>${c}</option>`).join('');
   const otros = dbGetAll().filter(x => x.id && x.id !== a.id);
   const opRel = otros.length
-    ? otros.map(x=>`<option value="${x.id}"${(a.relacionados||[]).includes(x.id)?' selected':''}>#${x.id} ${x.titulo.substring(0,40)}</option>`).join('')
+    ? otros.map(x => `<option value="${x.id}"${(a.relacionados || []).includes(x.id) ? ' selected' : ''}>#${x.id} ${x.titulo.substring(0, 40)}</option>`).join('')
     : '<option disabled>No hay otros artículos</option>';
 
-  const S = (s='')=>(s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const S = (s = '') => (s + '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
   pg.innerHTML = `
     <div style="background:#0f0f0f;border-bottom:1px solid #1e1e1e;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100;font-family:'Arial Narrow',sans-serif">
       <div style="display:flex;align-items:center;gap:12px">
         <button onclick="adminLista()" style="background:transparent;border:1px solid #2e2e2e;color:#c8b890;padding:7px 14px;font-family:inherit;font-size:.78em;border-radius:3px;cursor:pointer">← Volver</button>
-        <div style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0ece0;font-size:.95em">${esNuevo?'Nuevo artículo':'Editando #'+a.id}</div>
+        <div style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0ece0;font-size:.95em">${esNuevo ? 'Nuevo artículo' : 'Editando #' + a.id}</div>
       </div>
       <button onclick="adminGuardar()" style="background:#c8b890;color:#111;border:none;padding:9px 20px;font-family:inherit;font-size:.82em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:3px;cursor:pointer">💾 Guardar</button>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 260px;gap:20px;padding:20px 24px 60px;font-family:'Arial Narrow',sans-serif">
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;padding:20px 24px 60px;font-family:'Arial Narrow',sans-serif">
 
       <div style="display:flex;flex-direction:column;gap:16px">
 
@@ -399,7 +406,7 @@ function adminEditor() {
           oninput="_art.resumen=this.value" onfocus="this.style.borderColor='#c8b890'" onblur="this.style.borderColor='#262626'">${S(a.resumen)}</textarea></div>
 
         <div>
-          <label style="display:block;font-size:.68em;letter-spacing:.13em;text-transform:uppercase;color:#555;margin-bottom:5px">Cuerpo del artículo * <span style="text-transform:none;letter-spacing:0;font-size:.9em;color:#333">— HTML: &lt;p&gt; &lt;h3&gt; &lt;blockquote&gt; &lt;strong&gt;</span></label>
+          <label style="display:block;font-size:.68em;letter-spacing:.13em;text-transform:uppercase;color:#555;margin-bottom:5px">Cuerpo * <span style="text-transform:none;letter-spacing:0;font-size:.9em;color:#444">— HTML: &lt;p&gt; &lt;h3&gt; &lt;blockquote&gt; &lt;strong&gt;</span></label>
           <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">
             ${[['p','¶ P'],['h3','H3'],['bq','" Cita'],['b','B'],['i','I'],['ul','Lista']].map(([t,l])=>`<button type="button" onclick="adminFmt('${t}')" style="background:#161616;border:1px solid #2a2a2a;color:#888;padding:5px 9px;font-family:inherit;font-size:.72em;border-radius:2px;cursor:pointer">${l}</button>`).join('')}
           </div>
@@ -409,7 +416,7 @@ function adminEditor() {
         </div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:12px;position:sticky;top:80px">
+      <div style="display:flex;flex-direction:column;gap:12px">
 
         <div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:4px;padding:14px">
           <div style="font-size:.68em;letter-spacing:.14em;text-transform:uppercase;color:#555;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">📋 Información</div>
@@ -421,31 +428,32 @@ function adminEditor() {
           <div style="margin-bottom:10px"><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Fecha</label>
           <input id="e_fecha" value="${S(a.fecha)}" placeholder="28 de febrero de 2026" oninput="_art.fecha=this.value"
             style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none"></div>
-          <div><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Lectura</label>
-          <input id="e_lectura" value="${S(a.tiempoLectura||'3 min')}" placeholder="3 min" oninput="_art.tiempoLectura=this.value"
+          <div><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Tiempo de lectura</label>
+          <input id="e_lectura" value="${S(a.tiempoLectura || '3 min')}" placeholder="3 min" oninput="_art.tiempoLectura=this.value"
             style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none"></div>
         </div>
 
         <div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:4px;padding:14px">
-          <div style="font-size:.68em;letter-spacing:.14em;text-transform:uppercase;color:#555;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">🖼 Imagen</div>
-          <input id="e_img" value="${S(a.imagen)}" placeholder="ruta o URL de imagen"
+          <div style="font-size:.68em;letter-spacing:.14em;text-transform:uppercase;color:#555;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">🖼 Imagen</div>
+          <small style="color:#555;font-size:.72em;display:block;margin-bottom:8px">Pega una URL de imagen (https://...)</small>
+          <input id="e_img" value="${S(a.imagen)}" placeholder="https://ejemplo.com/imagen.jpg"
             style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.8em;border-radius:3px;outline:none;margin-bottom:8px"
             oninput="_art.imagen=this.value;document.getElementById('e_imgprev').src=this.value">
-          <div style="height:90px;border-radius:3px;overflow:hidden;background:#1a1a1a">
-            <img id="e_imgprev" src="${S(a.imagen)}" onerror="this.src='radio jamundi logo.png'" style="width:100%;height:100%;object-fit:cover">
+          <div style="height:90px;border-radius:3px;overflow:hidden;background:#1a1a1a;display:flex;align-items:center;justify-content:center">
+            <img id="e_imgprev" src="${S(a.imagen)}" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover">
           </div>
         </div>
 
         <div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:4px;padding:14px">
           <div style="font-size:.68em;letter-spacing:.14em;text-transform:uppercase;color:#555;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">🏷 Tags</div>
-          <input id="e_tags" value="${(a.tags||[]).join(', ')}" placeholder="salud, vacunación..."
+          <input id="e_tags" value="${(a.tags || []).join(', ')}" placeholder="salud, vacunación, jamundí"
             style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.8em;border-radius:3px;outline:none"
             oninput="_art.tags=this.value.split(',').map(t=>t.trim()).filter(Boolean)">
         </div>
 
         <div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:4px;padding:14px">
           <div style="font-size:.68em;letter-spacing:.14em;text-transform:uppercase;color:#555;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">🔗 Relacionados</div>
-          <small style="color:#444;font-size:.72em;display:block;margin-bottom:6px">Ctrl+clic para varios</small>
+          <small style="color:#444;font-size:.72em;display:block;margin-bottom:6px">Ctrl+clic para seleccionar varios</small>
           <select id="e_rel" multiple style="width:100%;height:110px;background:#111;border:1px solid #262626;color:#e0dbd0;padding:6px;font-family:inherit;font-size:.78em;border-radius:3px;outline:none"
             onchange="_art.relacionados=Array.from(this.selectedOptions).map(o=>Number(o.value))">${opRel}</select>
         </div>
@@ -455,55 +463,91 @@ function adminEditor() {
 }
 
 function adminGuardar() {
-  if (!_art.titulo||!_art.titulo.trim()) { rjToast('El titular es obligatorio','err'); return; }
-  if (!_art.resumen||!_art.resumen.trim()) { rjToast('El resumen es obligatorio','err'); return; }
-  if (!_art.cuerpo||!_art.cuerpo.trim()) { rjToast('El cuerpo es obligatorio','err'); return; }
-  if (!_art.autor||!_art.autor.trim()) { rjToast('El autor es obligatorio','err'); return; }
-
+  if (!_art.titulo || !_art.titulo.trim()) { rjToast('El titular es obligatorio', 'err'); return; }
+  if (!_art.resumen || !_art.resumen.trim()) { rjToast('El resumen es obligatorio', 'err'); return; }
+  if (!_art.cuerpo || !_art.cuerpo.trim()) { rjToast('El cuerpo es obligatorio', 'err'); return; }
+  if (!_art.autor || !_art.autor.trim()) { rjToast('El autor es obligatorio', 'err'); return; }
   const guardado = dbSave(_art);
   _art = null;
   renderHome();
   adminLista();
-  rjToast('✓ Artículo #'+guardado.id+' guardado.');
+  rjToast('✓ Artículo #' + guardado.id + ' guardado.');
 }
 
 function adminFmt(t) {
   const ta = document.getElementById('e_cuerpo');
   if (!ta) return;
-  const sel = ta.value.substring(ta.selectionStart, ta.selectionEnd)||'Texto aquí';
-  const map = {p:`<p>${sel}</p>`,h3:`<h3>${sel}</h3>`,bq:`<blockquote>${sel}</blockquote>`,b:`<strong>${sel}</strong>`,i:`<em>${sel}</em>`,ul:`<ul>\n  <li>${sel}</li>\n  <li>Otro</li>\n</ul>`};
-  const ins = map[t]||'';
+  const sel = ta.value.substring(ta.selectionStart, ta.selectionEnd) || 'Texto aquí';
+  const map = {
+    p:  `<p>${sel}</p>`,
+    h3: `<h3>${sel}</h3>`,
+    bq: `<blockquote>${sel}</blockquote>`,
+    b:  `<strong>${sel}</strong>`,
+    i:  `<em>${sel}</em>`,
+    ul: `<ul>\n  <li>${sel}</li>\n  <li>Otro</li>\n</ul>`
+  };
+  const ins = map[t] || '';
   const s = ta.selectionStart;
-  ta.value = ta.value.substring(0,s)+ins+ta.value.substring(ta.selectionEnd);
+  ta.value = ta.value.substring(0, s) + ins + ta.value.substring(ta.selectionEnd);
   ta.dispatchEvent(new Event('input'));
   ta.focus();
-  ta.selectionStart = ta.selectionEnd = s+ins.length;
+  ta.selectionStart = ta.selectionEnd = s + ins.length;
+}
+
+// ════════════════════════════════════════════════════
+//  CARRUSEL
+// ════════════════════════════════════════════════════
+let _carouselIndex = 0;
+
+function _cardWidth() {
+  const track = document.getElementById('allNewsGrid');
+  if (!track || !track.children.length) return 242;
+  return track.children[0].offsetWidth + 2;
+}
+
+function carouselScroll(dir) {
+  const track = document.getElementById('allNewsGrid');
+  if (!track) return;
+  const outer = track.parentElement;
+  const cw = _cardWidth();
+  const visible = Math.floor(outer.offsetWidth / cw);
+  const maxIndex = Math.max(0, track.children.length - visible);
+  _carouselIndex = Math.min(Math.max(_carouselIndex + dir, 0), maxIndex);
+  track.style.transform = 'translateX(-' + (_carouselIndex * cw) + 'px)';
+  const prev = document.getElementById('carouselPrev');
+  const next = document.getElementById('carouselNext');
+  if (prev) prev.style.opacity = _carouselIndex === 0 ? '0.35' : '1';
+  if (next) next.style.opacity = _carouselIndex >= maxIndex ? '0.35' : '1';
 }
 
 // ════════════════════════════════════════════════════
 //  UTILIDADES
 // ════════════════════════════════════════════════════
 function _hoy() {
-  return new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+  return new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 let _toastT;
-function rjToast(msg, tipo='ok') {
+function rjToast(msg, tipo = 'ok') {
   const t = document.getElementById('rjToast');
   t.textContent = msg;
-  t.className = tipo==='err' ? 'show err' : 'show';
+  t.className = tipo === 'err' ? 'show err' : 'show';
   clearTimeout(_toastT);
-  _toastT = setTimeout(()=>t.className='', 3200);
+  _toastT = setTimeout(() => t.className = '', 3200);
 }
 
-// Radio
 function toggleRadio() {
   const audio = document.getElementById('miReproductor');
   const icon  = document.getElementById('radioPlayIcon');
   const label = document.getElementById('radioPlayLabel');
-  if (audio.paused) { audio.play(); icon.textContent='⏸'; label.textContent='En vivo'; }
-  else { audio.pause(); icon.textContent='▶'; label.textContent='Escuchar en vivo'; }
+  if (audio.paused) { audio.play(); icon.textContent = '⏸'; label.textContent = 'En vivo'; }
+  else { audio.pause(); icon.textContent = '▶'; label.textContent = 'Escuchar en vivo'; }
 }
 
 // ── Iniciar al cargar ──────────────────────────────
-document.addEventListener('DOMContentLoaded', renderHome);
+document.addEventListener('DOMContentLoaded', () => {
+  renderHome();
+  setTimeout(() => carouselScroll(0), 100);
+});
+
+//COMENTARIO//
