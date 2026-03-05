@@ -806,9 +806,58 @@ function toggleRadio() {
 })();
 
 // ════════════════════════════════════════════════════
+//  SWIPE TÁCTIL — todos los carruseles
+// ════════════════════════════════════════════════════
+function addSwipe(trackId, scrollFn, suffix) {
+  const track = document.getElementById(trackId);
+  if (!track) return;
+  let startX = 0;
+  let startY = 0;
+  let locked = null; // 'h' horizontal | 'v' vertical
+
+  track.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    locked = null;
+  }, { passive: true });
+
+  track.addEventListener('touchmove', e => {
+    if (!locked) {
+      const dx = Math.abs(e.touches[0].clientX - startX);
+      const dy = Math.abs(e.touches[0].clientY - startY);
+      locked = dx > dy ? 'h' : 'v';
+    }
+    // Si es horizontal, prevenir scroll de página para no interferir
+    if (locked === 'h') e.preventDefault();
+  }, { passive: false });
+
+  track.addEventListener('touchend', e => {
+    if (locked !== 'h') return; // fue scroll vertical, ignorar
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) < 40) return; // tap, ignorar
+    if (suffix !== undefined) scrollFn(diff > 0 ? 1 : -1, suffix);
+    else scrollFn(diff > 0 ? 1 : -1);
+  }, { passive: true });
+}
+
+function initSwipes() {
+  // Carrusel de noticias
+  addSwipe('allNewsGrid', carouselScroll);
+  // Carrusel de videos — home y todas las categorías
+  addSwipe('videoGrid',          videoCarouselScroll, '');
+  addSwipe('videoGridNoticias',  videoCarouselScroll, 'Noticias');
+  addSwipe('videoGridDeportes',  videoCarouselScroll, 'Deportes');
+  addSwipe('videoGridCultura',   videoCarouselScroll, 'Cultura');
+  addSwipe('videoGridPolitica',  videoCarouselScroll, 'Politica');
+}
+
+// ════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   renderHome();
-  setTimeout(() => carouselScroll(0), 100);
-});
+  setTimeout(() => {
+    carouselScroll(0);
+    initSwipes();
+  }, 150);
+});gti
