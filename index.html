@@ -5,204 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css.css">
   <title>RADIO JAMUNDI</title>
-  <style>
-    /* ══════════════════════════════════════════
-       BADGES YOUTUBE sobre tarjetas normales
-    ══════════════════════════════════════════ */
-    .rj_yt_badge_sm {
-      position: absolute;
-      bottom: 8px; right: 8px;
-      background: rgba(255,0,0,.92);
-      color: #fff;
-      font-size: .6em; font-weight: 800;
-      padding: 3px 7px; border-radius: 4px;
-      letter-spacing: .05em;
-      pointer-events: none; z-index: 2;
-    }
-    .rj_yt_badge_hero {
-      position: absolute;
-      top: 14px; right: 14px;
-      background: rgba(255,0,0,.92);
-      color: #fff;
-      font-size: .72em; font-weight: 800;
-      padding: 5px 12px; border-radius: 5px;
-      letter-spacing: .08em;
-      pointer-events: none; z-index: 4;
-    }
-
-    /* ══════════════════════════════════════════
-       BLOQUE VIDEO DENTRO DEL ARTÍCULO
-    ══════════════════════════════════════════ */
-    .art_video_wrap {
-      margin: 28px 0 32px;
-      border-radius: 10px; overflow: hidden;
-      border: 1px solid #e2e6eb; background: #000;
-    }
-    .art_video_label {
-      background: #ff0000; color: #fff;
-      font-size: .78em; font-weight: 800;
-      letter-spacing: .1em; text-transform: uppercase;
-      padding: 8px 16px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .art_video_frame {
-      position: relative; width: 100%;
-      padding-bottom: 56.25%; height: 0; background: #000;
-    }
-    .art_video_frame iframe {
-      position: absolute; top:0; left:0;
-      width:100%; height:100%; border:none; display:block;
-    }
-
-    /* ══════════════════════════════════════════
-       SECCIÓN NOTICIAS EN VIDEO
-    ══════════════════════════════════════════ */
-    .rj_video_section {
-      background: #f5f7fa;
-      border-top: 3px solid #e2e6eb;
-      padding: 0 0 40px;
-    }
-
-    /* Cabecera igual al carrusel de noticias */
-    .rj_video_header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 28px 0 18px;
-    }
-    .rj_video_title {
-      font-size: 1.15em;
-      font-weight: 900;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: #111827;
-      margin: 0;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .rj_video_title_arrow { color: var(--c-accent, #0ea5e9); }
-    .rj_video_title_badge {
-      background: #ff0000; color: #fff;
-      font-size: .52em; font-weight: 800;
-      padding: 3px 9px; border-radius: 4px;
-      letter-spacing: .1em; vertical-align: middle;
-    }
-    .rj_video_nav { display: flex; gap: 8px; }
-    .rj_video_btn {
-      width: 34px; height: 34px; border-radius: 50%;
-      border: 1px solid #d1d5db;
-      background: #fff; color: #374151;
-      font-size: 1.2em; line-height: 1;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background .18s, color .18s, border-color .18s;
-    }
-    .rj_video_btn:hover {
-      background: var(--c-accent, #0ea5e9);
-      border-color: var(--c-accent, #0ea5e9);
-      color: #fff;
-    }
-
-    /* Track con overflow hidden igual al carrusel */
-    .rj_video_outer { overflow: hidden; }
-    .rj_video_track {
-      display: flex; gap: 2px;
-      transition: transform .38s cubic-bezier(.4,0,.2,1);
-      will-change: transform;
-    }
-
-    /* ── Tarjeta de video ── */
-    .rj_vcard {
-      flex: 0 0 300px; width: 300px;
-      background: #fff;
-      border-radius: 10px; overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,.07);
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-      border: 1px solid #e2e6eb;
-    }
-    .rj_vcard:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 28px rgba(0,0,0,.12);
-    }
-
-    /* El iframe del video ocupa la parte superior de la tarjeta */
-    .rj_vcard_video {
-      position: relative; width: 100%;
-      padding-bottom: 56.25%; height: 0;
-      background: #000; overflow: hidden;
-      border-radius: 10px 10px 0 0;
-    }
-    .rj_vcard_video iframe {
-      position: absolute; top:0; left:0;
-      width:100%; height:100%; border:none; display:block;
-      pointer-events: none; /* clic abre el artículo, no el iframe */
-    }
-    /* Al hacer hover en la tarjeta se activa el video */
-    .rj_vcard:hover .rj_vcard_video iframe {
-      pointer-events: auto;
-    }
-    /* Overlay de play sobre el video */
-    .rj_vcard_play_overlay {
-      position: absolute; inset:0;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,.25);
-      transition: opacity .2s;
-      pointer-events: none;
-    }
-    .rj_vcard_play_overlay span {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: rgba(255,0,0,.9);
-      color: #fff; font-size: 1.3em;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 16px rgba(0,0,0,.4);
-    }
-    .rj_vcard:hover .rj_vcard_play_overlay { opacity: 0; }
-
-    /* Cuerpo de texto de la tarjeta */
-    .rj_vcard_body { padding: 13px 15px 16px; }
-    .rj_vcard_cat {
-      font-size: .58em; font-weight: 800;
-      letter-spacing: .14em; text-transform: uppercase;
-      color: var(--c-accent, #0ea5e9);
-      margin-bottom: 5px;
-    }
-    .rj_vcard_title {
-      font-size: .88em; font-weight: 700;
-      color: #111827; line-height: 1.35;
-      margin-bottom: 6px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .rj_vcard_meta { font-size: .68em; color: #6b7280; }
-    .rj_vcard_readmore {
-      display: inline-block; margin-top: 8px;
-      font-size: .68em; font-weight: 700;
-      color: #ff0000; letter-spacing: .05em;
-      text-transform: uppercase;
-    }
-
-    /* Pie del carrusel de videos */
-    .rj_video_footer {
-      margin-top: 16px; text-align: right;
-    }
-    .rj_video_count {
-      font-size: .72em; color: #9ca3af;
-      letter-spacing: .08em; text-transform: uppercase;
-    }
-
-    /* Mensaje cuando no hay videos */
-    .rj_video_empty {
-      padding: 40px 0; text-align: center;
-      color: #9ca3af; font-size: .9em;
-    }
-
-    /* Wrapper con max-width igual al carrusel */
-    .rj_video_inner {
-      max-width: 1280px; margin: 0 auto; padding: 0 28px;
-    }
-  </style>
 </head>
 <body>
 
@@ -248,10 +50,7 @@
   <!-- HOME -->
   <div class="homePage" style="padding:0;">
 
-
     <!-- HERO -->
-    <!-- Hero + sidebar -->
->>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
     <div class="rj_hero_section">
       <div class="rj_hero_inner">
         <div class="rj_hero_big" id="heroFeaturedNews"></div>
@@ -260,9 +59,6 @@
     </div>
 
     <!-- CARRUSEL NOTICIAS -->
-=======
-    <!-- Carrusel noticias normales -->
->>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
     <div class="rj_carousel_section">
       <div class="rj_carousel_inner">
         <div class="rj_carousel_header">
@@ -282,7 +78,6 @@
     </div>
 
     <!-- ══ SECCIÓN NOTICIAS EN VIDEO ══ -->
-
     <div id="videoSection" style="display:none;">
       <div class="rj_carousel_inner">
         <div class="rj_carousel_header">
@@ -300,35 +95,11 @@
         </div>
         <div class="rj_carousel_footer">
           <span class="rj_carousel_count" id="videoCount"></span>
-
-    <div class="rj_video_section" id="videoSection" style="display:none;">
-      <div class="rj_video_inner">
-        <div class="rj_video_header">
-          <h2 class="rj_video_title">
-            Noticias en Video
-            <span class="rj_video_title_arrow">›</span>
-            <span class="rj_video_title_badge">▶ VIDEO</span>
-          </h2>
-          <div class="rj_video_nav">
-            <button class="rj_video_btn" id="videoPrev" onclick="videoCarouselScroll(-1)">‹</button>
-            <button class="rj_video_btn" id="videoNext" onclick="videoCarouselScroll(1)">›</button>
-          </div>
-        </div>
-        <div class="rj_video_outer">
-          <div class="rj_video_track" id="videoGrid"></div>
-        </div>
-        <div class="rj_video_footer">
-          <span class="rj_video_count" id="videoCount"></span>
-
         </div>
       </div>
     </div>
 
-
   </div><!-- fin .homePage -->
-
-  </div><!-- .homePage -->
-
 
   <!-- CATEGORÍAS -->
   <div class="page_cat" id="catNoticias" style="display:none;">
@@ -416,13 +187,15 @@
   <div id="adminPage"></div>
   <div id="rjToast"></div>
 
-  <!-- FOOTER -->
+  <!-- ════ FOOTER ════ -->
   <footer class="rj_footer">
     <div class="rj_footer_inner">
 
       <div class="rj_footer_brand">
         <img src="radio jamundi logo.png" alt="Radio Jamundí" class="rj_footer_logo" onerror="this.style.display='none'">
-        <p class="rj_footer_desc">La voz de Jamundí. Informamos, entretenemos y conectamos a nuestra comunidad con lo que más importa: noticias locales, deportes, cultura y política al instante.</p>
+        <p class="rj_footer_desc">
+          La voz de Jamundí. Informamos, entretenemos y conectamos a nuestra comunidad con lo que más importa: noticias locales, deportes, cultura y política al instante.
+        </p>
         <div class="rj_footer_social">
           <a href="https://www.facebook.com" target="_blank" rel="noopener" title="Facebook">
             <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
@@ -463,19 +236,18 @@
         </div>
         <div class="rj_footer_contact_item">
           <span class="rj_footer_contact_icon">💬</span>
-          <span class="rj_footer_contact_text"><a href="https://web.whatsapp.com/" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></span>
+          <span class="rj_footer_contact_text">
+            <a href="https://web.whatsapp.com/" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+          </span>
         </div>
         <div class="rj_footer_contact_item">
           <span class="rj_footer_contact_icon">📧</span>
-
           <span class="rj_footer_contact_text">
             <a href="mailto:info@radiojamundi.com">info@radiojamundi.com</a>
           </span>
-
-          <span class="rj_footer_contact_text"><a href="mailto:info@radiojamundi.com">info@radiojamundi.com</a></span>
-
         </div>
       </div>
+
     </div>
 
     <div class="rj_footer_divider">
