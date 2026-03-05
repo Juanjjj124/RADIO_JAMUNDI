@@ -1,6 +1,5 @@
 // ════════════════════════════════════════════════════
 //  BASE DE DATOS — localStorage
-//  (Funciona correctamente en hosting/cPanel)
 // ════════════════════════════════════════════════════
 
 const DB_KEY = 'rj_articulos_v4';
@@ -22,52 +21,224 @@ const DEFAULTS = [
   {id:14,titulo:"Sabores del Valle: los mejores platos de nuestra cocina",categoria:"CULTURA",autor:"Redacción Cultura",fecha:"23 de febrero de 2026",tiempoLectura:"4 min",imagen:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",resumen:"Chuleta valluna, sancocho de gallina y aborrajados encabezan los platos más representativos.",cuerpo:"<p>La gastronomía del Valle fusiona tradiciones indígenas, africanas y españolas. La chuleta valluna es el plato emblema: cerdo apanado y frito con arroz, frijoles y patacones.</p><h3>El sancocho de gallina criolla</h3><p>Preparado en fogón de leña con gallina criolla, yuca, plátano y mazorca. Es reunión familiar, domingo en el campo.</p><blockquote>\"Nuestra cocina es nuestra historia.\" — Chef vallecaucana</blockquote>",tags:["cultura","gastronomía","valle del cauca"],relacionados:[6,11,12]}
 ];
 
-// ── API con localStorage ───────────────────────────────
+// ── API con localStorage ──────────────────────────────
 function dbGetAll() {
   try {
     const raw = localStorage.getItem(DB_KEY);
-    if (!raw) {
-      localStorage.setItem(DB_KEY, JSON.stringify(DEFAULTS));
-      return JSON.parse(JSON.stringify(DEFAULTS));
-    }
+    if (!raw) { localStorage.setItem(DB_KEY, JSON.stringify(DEFAULTS)); return JSON.parse(JSON.stringify(DEFAULTS)); }
     const arr = JSON.parse(raw);
-    if (!Array.isArray(arr) || arr.length === 0) {
-      localStorage.setItem(DB_KEY, JSON.stringify(DEFAULTS));
-      return JSON.parse(JSON.stringify(DEFAULTS));
-    }
+    if (!Array.isArray(arr) || arr.length === 0) { localStorage.setItem(DB_KEY, JSON.stringify(DEFAULTS)); return JSON.parse(JSON.stringify(DEFAULTS)); }
     return arr;
-  } catch(e) {
-    return JSON.parse(JSON.stringify(DEFAULTS));
-  }
+  } catch(e) { return JSON.parse(JSON.stringify(DEFAULTS)); }
 }
-
-function dbGetById(id) {
-  return dbGetAll().find(a => a.id === Number(id)) || null;
-}
-
+function dbGetById(id) { return dbGetAll().find(a => a.id === Number(id)) || null; }
 function dbSave(art) {
   const todos = dbGetAll();
-  if (!art.id) {
-    art.id = todos.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
-    todos.unshift(art);
-  } else {
-    const idx = todos.findIndex(a => a.id === Number(art.id));
-    if (idx !== -1) todos[idx] = art;
-    else {
-      art.id = todos.reduce((m, a) => Math.max(m, a.id || 0), 0) + 1;
-      todos.unshift(art);
-    }
-  }
+  if (!art.id) { art.id = todos.reduce((m,a)=>Math.max(m,a.id||0),0)+1; todos.unshift(art); }
+  else { const idx=todos.findIndex(a=>a.id===Number(art.id)); if(idx!==-1) todos[idx]=art; else { art.id=todos.reduce((m,a)=>Math.max(m,a.id||0),0)+1; todos.unshift(art); } }
   localStorage.setItem(DB_KEY, JSON.stringify(todos));
   return art;
 }
-
-function dbDelete(id) {
-  const todos = dbGetAll().filter(a => a.id !== Number(id));
-  localStorage.setItem(DB_KEY, JSON.stringify(todos));
-}
+function dbDelete(id) { localStorage.setItem(DB_KEY, JSON.stringify(dbGetAll().filter(a=>a.id!==Number(id)))); }
 
 const CATS_DB = ["NOTICIAS", "POLÍTICA", "DEPORTES", "CULTURA"];
+
+// ════════════════════════════════════════════════════
+//  BASE DE DATOS DE VIDEOS
+// ════════════════════════════════════════════════════
+const VIDEO_NEWS = [
+  {id:'v1',titulo:"Colombia clasifica al Mundial 2026: la noche que paralizó al país",categoria:"DEPORTES",autor:"Redacción Deportes",fecha:"4 de septiembre de 2025",youtubeId:"Cz2xm4VWzJE",link:"https://www.youtube.com/watch?v=Cz2xm4VWzJE",resumen:"Resumen y goles del partido Colombia vs Bolivia. La Selección goleó 3-0 y selló su clasificación al Mundial 2026."},
+  {id:'v2',titulo:"Fuerte sismo de 6.3 sacude el centro de Colombia",categoria:"NOTICIAS",autor:"Redacción Noticias",fecha:"9 de junio de 2025",youtubeId:"2BM1ImeIjSc",link:"https://www.youtube.com/watch?v=2BM1ImeIjSc",resumen:"Un terremoto de magnitud 6.3 con epicentro en Paratebueno sacudió Cundinamarca, Boyacá y Meta."},
+  {id:'v3',titulo:"Deportivo Cali vs La Equidad: resumen Liga BetPlay 2025",categoria:"DEPORTES",autor:"Juan López",fecha:"18 de mayo de 2025",youtubeId:"fi7rsOd16Gw",link:"https://www.youtube.com/watch?v=fi7rsOd16Gw",resumen:"Resumen completo del partido entre Deportivo Cali y La Equidad por la Liga Colombiana 2025-I."},
+  {id:'v4',titulo:"Congreso rechaza reforma tributaria propuesta por Petro",categoria:"POLÍTICA",autor:"Redacción Política",fecha:"15 de agosto de 2025",youtubeId:"xNjh-wQ07Cw",link:"https://www.youtube.com/watch?v=xNjh-wQ07Cw",resumen:"El Congreso colombiano rechazó la reforma tributaria que buscaba recaudar aproximadamente $9.8 billones."},
+  {id:'v5',titulo:"Colombia vs Perú: eliminatorias al Mundial 2026",categoria:"DEPORTES",autor:"Redacción Deportes",fecha:"15 de septiembre de 2025",youtubeId:"aNbCHHqnakw",link:"https://www.youtube.com/watch?v=aNbCHHqnakw",resumen:"Resumen y análisis del partido Colombia vs Perú por las eliminatorias sudamericanas rumbo al Mundial 2026."},
+  {id:'v6',titulo:"Sismo de 6.5 sacude gran parte de Colombia",categoria:"NOTICIAS",autor:"Redacción Noticias",fecha:"22 de junio de 2025",youtubeId:"UvdFN_-IMw8",link:"https://www.youtube.com/watch?v=UvdFN_-IMw8",resumen:"Un fuerte terremoto de magnitud 6.5 se sintió en Cundinamarca, Boyacá, Meta y gran parte del territorio colombiano."},
+  {id:'v7',titulo:"Ley de financiamiento 2026: debate en el Congreso",categoria:"POLÍTICA",autor:"Redacción Política",fecha:"10 de septiembre de 2025",youtubeId:"lHYHWwefArQ",link:"https://www.youtube.com/watch?v=lHYHWwefArQ",resumen:"El gobierno propone ley de financiamiento de $26.3 billones para el presupuesto general de la nación 2026."},
+  {id:'v8',titulo:"Colombia lista para el Mundial 2026: análisis y expectativas",categoria:"DEPORTES",autor:"Redacción Deportes",fecha:"20 de septiembre de 2025",youtubeId:"3HH4fmm6mhs",link:"https://www.youtube.com/watch?v=3HH4fmm6mhs",resumen:"Análisis completo de la Selección Colombia rumbo al Mundial 2026: figuras, estadísticas y expectativas."},
+  {id:'v9',titulo:"Temblor de 5.4 sacude Medellín y Antioquia",categoria:"NOTICIAS",autor:"Redacción Noticias",fecha:"14 de septiembre de 2025",youtubeId:"3x2BH_gFy2s",link:"https://www.youtube.com/watch?v=3x2BH_gFy2s",resumen:"Sismo de magnitud 5.4 cerca de Uramita sacudió Medellín y gran parte de Antioquia."},
+  {id:'v10',titulo:"Debate por referendo de reforma laboral en Colombia",categoria:"POLÍTICA",autor:"Redacción Política",fecha:"5 de julio de 2025",youtubeId:"A_U4kO9m788",link:"https://www.youtube.com/watch?v=A_U4kO9m788",resumen:"El presidente Petro convoca referendo por reforma laboral para el 7 de agosto. Análisis del debate político."},
+  {id:'v11',titulo:"Terremoto de 6.0 con epicentro en Venezuela se siente en Colombia",categoria:"NOTICIAS",autor:"Redacción Noticias",fecha:"24 de septiembre de 2025",youtubeId:"-XLb-PiUGuo",link:"https://www.youtube.com/watch?v=-XLb-PiUGuo",resumen:"Sismo de magnitud 6.0 con epicentro en Venezuela sacudió Cartagena y la costa norte colombiana."},
+  {id:'v12',titulo:"Sismo de 4.8 en Santander se siente en Bogotá",categoria:"NOTICIAS",autor:"Redacción Noticias",fecha:"30 de agosto de 2025",youtubeId:"zeD_tU8J2l0",link:"https://www.youtube.com/watch?v=zeD_tU8J2l0",resumen:"Temblor de magnitud 4.8 en Santander se sintió con fuerza en la capital colombiana."}
+];
+
+// ════════════════════════════════════════════════════
+//  CONTROL DE VIDEO — UN SOLO VIDEO A LA VEZ
+//
+//  Estrategia: el iframe nace con src="" (no carga nada).
+//  Al hacer clic en ▶ se inyecta el src con autoplay=1.
+//  Al detener se borra el src → el video muere por completo.
+//  La clase .vcard_playing en el wrapper controla
+//  via CSS qué se ve: miniatura vs iframe.
+// ════════════════════════════════════════════════════
+let _activeVideoId = null;
+
+function _pauseActive() {
+  if (!_activeVideoId) return;
+  const iframe = document.getElementById('vframe_' + _activeVideoId);
+  if (iframe) {
+    iframe.src = '';
+    iframe.style.opacity = '0';
+    iframe.style.pointerEvents = 'none';
+  }
+  const wrap = document.getElementById('vcardwrap_' + _activeVideoId);
+  if (wrap) wrap.classList.remove('vcard_playing');
+  _activeVideoId = null;
+}
+
+function toggleVideoCard(videoId, e) {
+  if (e) e.stopPropagation();
+
+  // Si ya estaba reproduciendo este → detener
+  if (_activeVideoId === videoId) {
+    _pauseActive();
+    return;
+  }
+
+  // Detener el que estaba activo (si había alguno)
+  _pauseActive();
+
+  // Reproducir el nuevo
+  const iframe = document.getElementById('vframe_' + videoId);
+  if (iframe) {
+    iframe.src = iframe.getAttribute('data-src') + '&autoplay=1';
+    iframe.style.opacity = '1';
+    iframe.style.pointerEvents = 'all';
+  }
+  const wrap = document.getElementById('vcardwrap_' + videoId);
+  if (wrap) wrap.classList.add('vcard_playing');
+
+  _activeVideoId = videoId;
+}
+
+// ════════════════════════════════════════════════════
+//  HELPER: genera el HTML de una tarjeta de video
+// ════════════════════════════════════════════════════
+function _videoCardHTML(v) {
+  return `
+    <div class="rj_vcard">
+
+      <!-- ÁREA DE VIDEO (16:9) -->
+      <div class="rj_vcard_video" id="vcardwrap_${v.id}">
+
+        <!-- Miniatura -->
+        <img class="rj_vcard_thumb"
+             src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg"
+             alt="${v.titulo}"
+             onerror="this.style.display='none'">
+
+        <!-- iframe: src vacío hasta que el usuario haga clic -->
+        <iframe
+          id="vframe_${v.id}"
+          src=""
+          data-src="https://www.youtube.com/embed/${v.youtubeId}?rel=0&modestbranding=1&enablejsapi=1"
+          title="${v.titulo}"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          style="position:absolute;inset:0;width:100%;height:100%;border:none;opacity:0;pointer-events:none;transition:opacity .3s;">
+        </iframe>
+
+        <!-- Overlay con botón ▶ -->
+        <div class="rj_vcard_play_overlay"
+             onclick="toggleVideoCard('${v.id}', event)">
+          <div class="rj_vcard_play_btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <polygon points="5,3 18,10 5,17" fill="white"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CUERPO DE LA TARJETA -->
+      <div class="rj_vcard_body" onclick="openVideoArticle('${v.id}')">
+        <div class="rj_vcard_cat">${v.categoria}</div>
+        <div class="rj_vcard_title">${v.titulo}</div>
+        <div class="rj_vcard_meta">${v.autor} · ${v.fecha}</div>
+        <a class="rj_vcard_readmore"
+           href="javascript:void(0)"
+           onclick="event.stopPropagation(); openVideoArticle('${v.id}')">
+          LEER NOTA COMPLETA &rarr;
+        </a>
+      </div>
+
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════
+//  SECCIÓN NOTICIAS EN VIDEO — Render
+//  sufijo: '' = home | 'Noticias' | 'Deportes' | etc.
+// ════════════════════════════════════════════════════
+
+// Índices independientes por sección
+const _vIdx = { '': 0, Noticias: 0, Deportes: 0, Cultura: 0, Politica: 0 };
+
+// Mapeo de categoría DB → sufijo de sección
+const _catToSuffix = {
+  'NOTICIAS': 'Noticias',
+  'DEPORTES': 'Deportes',
+  'CULTURA':  'Cultura',
+  'POLÍTICA': 'Politica'
+};
+
+function renderVideoSection(filterCat) {
+  // Determinar sufijo e IDs de elementos
+  const suffix  = filterCat ? (_catToSuffix[filterCat] || '') : '';
+  const gridId  = 'videoGrid'    + suffix;
+  const sectId  = 'videoSection' + suffix;
+  const countId = 'videoCount'   + suffix;
+
+  const section = document.getElementById(sectId);
+  const grid    = document.getElementById(gridId);
+  const countEl = document.getElementById(countId);
+  if (!section || !grid) return;
+
+  // Pausar el video activo al re-renderizar
+  _pauseActive();
+
+  // Filtrar videos
+  const videos = filterCat
+    ? VIDEO_NEWS.filter(v => v.categoria === filterCat)
+    : VIDEO_NEWS;
+
+  if (!videos.length) { section.style.display = 'none'; return; }
+
+  section.style.display = 'block';
+  _vIdx[suffix] = 0;
+  grid.style.transform = 'translateX(0)';
+  grid.innerHTML = videos.map(_videoCardHTML).join('');
+
+  if (countEl)
+    countEl.textContent = videos.length + ' VIDEO' + (videos.length !== 1 ? 'S' : '');
+
+  setTimeout(() => videoCarouselScroll(0, suffix), 100);
+}
+
+// ════════════════════════════════════════════════════
+//  CARRUSEL DE VIDEOS — Navegación
+// ════════════════════════════════════════════════════
+function videoCarouselScroll(dir, suffix) {
+  if (suffix === undefined) suffix = '';
+  const gridId = 'videoGrid' + suffix;
+  const prevId = 'videoPrev'  + suffix;
+  const nextId = 'videoNext'  + suffix;
+
+  const track = document.getElementById(gridId);
+  if (!track || !track.children.length) return;
+
+  const outer   = track.parentElement;
+  const gap     = parseInt(getComputedStyle(track).gap) || 16;
+  const cw      = track.children[0].offsetWidth + gap;
+  const visible = Math.max(1, Math.floor(outer.offsetWidth / cw));
+  const maxIdx  = Math.max(0, track.children.length - visible);
+
+  _vIdx[suffix] = Math.min(Math.max((_vIdx[suffix] || 0) + dir, 0), maxIdx);
+  track.style.transform = 'translateX(-' + (_vIdx[suffix] * cw) + 'px)';
+
+  const prev = document.getElementById(prevId);
+  const next = document.getElementById(nextId);
+  if (prev) prev.style.opacity = _vIdx[suffix] === 0       ? '0.35' : '1';
+  if (next) next.style.opacity = _vIdx[suffix] >= maxIdx   ? '0.35' : '1';
+}
 
 // ════════════════════════════════════════════════════
 //  RENDERIZADO DINÁMICO
@@ -75,7 +246,7 @@ const CATS_DB = ["NOTICIAS", "POLÍTICA", "DEPORTES", "CULTURA"];
 function renderHome() {
   const todos = dbGetAll();
 
-  // ── HERO PRINCIPAL ──
+  // ── HERO ──
   const heroFeat = document.getElementById('heroFeaturedNews');
   if (heroFeat && todos.length > 0) {
     const a = todos[0];
@@ -84,19 +255,15 @@ function renderHome() {
       <img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'">
       <div class="rj_hero_big_overlay"></div>
       <span class="rj_hero_big_cat">${a.categoria}</span>
-      <div class="rj_hero_big_body">
-        <h2 class="rj_hero_big_title">${a.titulo}</h2>
-      </div>`;
+      <div class="rj_hero_big_body"><h2 class="rj_hero_big_title">${a.titulo}</h2></div>`;
   }
 
-  // ── SIDEBAR (3 noticias) ──
+  // ── SIDEBAR ──
   const side = document.getElementById('heroSide');
   if (side) {
-    side.innerHTML = todos.slice(1, 4).map(a => `
+    side.innerHTML = todos.slice(1,4).map(a => `
       <div class="rj_side_item" onclick="openArticle(${a.id})">
-        <div class="rj_side_img">
-          <img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'">
-        </div>
+        <div class="rj_side_img"><img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'"></div>
         <div class="rj_side_body">
           <span class="rj_side_cat">${a.categoria}</span>
           <div class="rj_side_title">${a.titulo}</div>
@@ -105,16 +272,14 @@ function renderHome() {
       </div>`).join('');
   }
 
-  // ── CARRUSEL ──
+  // ── CARRUSEL NOTICIAS ──
   const allGrid = document.getElementById('allNewsGrid');
   if (allGrid) {
     _carouselIndex = 0;
     allGrid.style.transform = 'translateX(0)';
     allGrid.innerHTML = todos.map(a => `
       <div class="rj_card" onclick="openArticle(${a.id})">
-        <div class="rj_card_img">
-          <img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'">
-        </div>
+        <div class="rj_card_img"><img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'"></div>
         <div class="rj_card_cat">${a.categoria}</div>
         <div class="rj_card_title">${a.titulo}</div>
         <div class="rj_card_meta">${a.autor} · ${a.fecha}</div>
@@ -132,14 +297,14 @@ function renderHome() {
         <div><img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'"></div>
         <div class="new_card_cat">${a.categoria}</div>
         <div class="new_card_title"><span>${a.titulo}</span></div>
-        <p class="card_text">${a.resumen ? a.resumen.substring(0, 100) + (a.resumen.length > 100 ? '…' : '') : ''}</p>
+        <p class="card_text">${a.resumen ? a.resumen.substring(0,100)+(a.resumen.length>100?'…':'') : ''}</p>
         <div class="autor">${a.autor} · ${a.fecha}</div>
       </div>`).join('');
     const cntNav = document.getElementById('allNewsCountNav');
     if (cntNav) cntNav.textContent = todos.length + ' artículo' + (todos.length !== 1 ? 's' : '');
   }
 
-  // ── GRIDS DE CATEGORÍA ──
+  // ── GRIDS POR CATEGORÍA ──
   const mapGrid = {
     gridNoticias: ['NOTICIAS'],
     gridDeportes: ['DEPORTES'],
@@ -166,41 +331,39 @@ function renderHome() {
         </div>
       </div>`;
     for (let i = 0; i < resto.length; i += 2) {
-      const par = resto.slice(i, i + 2);
-      html += `<div class="cat_subgrid">${par.map(a => `
+      html += `<div class="cat_subgrid">${resto.slice(i,i+2).map(a=>`
         <div class="cat_card" onclick="openArticle(${a.id})" style="cursor:pointer">
           <div class="cat_card_img"><img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'"></div>
           <div class="cat_card_body">
             <div class="cat_card_cat">${a.categoria}</div>
             <div class="cat_card_title">${a.titulo}</div>
-            <p class="cat_card_text">${a.resumen.substring(0, 90)}…</p>
+            <p class="cat_card_text">${a.resumen.substring(0,90)}…</p>
             <div class="autor">${a.fecha}</div>
           </div>
         </div>`).join('')}</div>`;
     }
     el.innerHTML = html;
   });
+
+  // ── SECCIÓN DE VIDEOS (HOME) ──
+  renderVideoSection();
 }
 
 // ════════════════════════════════════════════════════
-//  ABRIR / CERRAR ARTÍCULO
+//  ABRIR ARTÍCULO DE TEXTO
 // ════════════════════════════════════════════════════
 function openArticle(id) {
   const art = dbGetById(id);
   if (!art) { alert('Artículo no encontrado. ID: ' + id); return; }
-
-  const vis = [...document.querySelectorAll('.homePage,.page_cat')]
-    .find(el => el.offsetParent !== null);
+  _pauseActive();
+  const vis = [...document.querySelectorAll('.homePage,.page_cat')].find(el => el.offsetParent !== null);
   sessionStorage.setItem('paginaAnterior', vis ? vis.id || 'homePage' : 'homePage');
-
   document.querySelectorAll('.homePage,.page_cat,#adminPage').forEach(el => el.style.display = 'none');
 
-  const rels = (art.relacionados || []).map(rid => dbGetById(rid)).filter(Boolean);
+  const rels = (art.relacionados||[]).map(rid=>dbGetById(rid)).filter(Boolean);
   const relHTML = rels.length
-    ? rels.map(r => `<div class="art-rel-card" onclick="openArticle(${r.id})"><div class="art-rel-img"><img src="${r.imagen}" onerror="this.src='radio jamundi logo.png'"><span class="art-rel-cat">${r.categoria}</span></div><div class="art-rel-body"><div class="art-rel-title">${r.titulo}</div><div class="art-rel-meta">${r.autor} · ${r.fecha}</div></div></div>`).join('')
+    ? rels.map(r=>`<div class="art-rel-card" onclick="openArticle(${r.id})"><div class="art-rel-img"><img src="${r.imagen}" onerror="this.src='radio jamundi logo.png'"><span class="art-rel-cat">${r.categoria}</span></div><div class="art-rel-body"><div class="art-rel-title">${r.titulo}</div><div class="art-rel-meta">${r.autor} · ${r.fecha}</div></div></div>`).join('')
     : '<p class="art-no-rel">No hay artículos relacionados.</p>';
-
-  const tagsHTML = (art.tags || []).map(t => `<span class="art-tag">#${t}</span>`).join('');
 
   const pg = document.getElementById('articlePage');
   pg.innerHTML = `
@@ -208,25 +371,23 @@ function openArticle(id) {
       <div class="article-breadcrumb">
         <a onclick="closeArticle()">Inicio</a><span>›</span>
         <a onclick="closeArticle();mostrarCat('${art.categoria}')">${art.categoria}</a><span>›</span>
-        <span>${art.titulo.substring(0, 45)}${art.titulo.length > 45 ? '…' : ''}</span>
+        <span>${art.titulo.substring(0,45)}${art.titulo.length>45?'...':''}</span>
       </div>
       <div class="article-top-tag">${art.categoria}</div>
       <h1 class="article-title">${art.titulo}</h1>
       <p class="article-deck">${art.resumen}</p>
       <div class="article-meta">
-        <span class="author">✍ ${art.autor}</span>
+        <span class="author">&#9997; ${art.autor}</span>
         <span style="color:#2e2e2e">·</span>
-        <span>🕐 ${art.tiempoLectura || '3 min'}</span>
+        <span>&#128336; ${art.tiempoLectura||'3 min'}</span>
         <span style="color:#2e2e2e">·</span>
-        <span>📅 ${art.fecha}</span>
+        <span>&#128197; ${art.fecha}</span>
       </div>
-      <div class="article-hero-img">
-        <img src="${art.imagen}" alt="${art.titulo}" onerror="this.style.display='none'">
-      </div>
-      <p class="article-img-caption">📷 Imagen ilustrativa · Radio Jamundí</p>
+      <div class="article-hero-img"><img src="${art.imagen}" alt="${art.titulo}" onerror="this.style.display='none'"></div>
+      <p class="article-img-caption">&#128247; Imagen ilustrativa · Radio Jamundi</p>
       <div class="article-body">${art.cuerpo}</div>
-      <div class="art-tags">${tagsHTML}</div>
-      <button class="article-back-btn" onclick="closeArticle()">← Volver a ${art.categoria}</button>
+      <div class="art-tags">${(art.tags||[]).map(t=>`<span class="art-tag">#${t}</span>`).join('')}</div>
+      <button class="article-back-btn" onclick="closeArticle()">&#8592; Volver a ${art.categoria}</button>
     </div>
     <section class="art-relacionados">
       <div class="art-rel-inner">
@@ -238,22 +399,87 @@ function openArticle(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ════════════════════════════════════════════════════
+//  ABRIR ARTÍCULO DE VIDEO
+// ════════════════════════════════════════════════════
+function openVideoArticle(videoId) {
+  const vid = VIDEO_NEWS.find(v => v.id === videoId);
+  if (!vid) { alert('Video no encontrado.'); return; }
+  _pauseActive();
+  const vis = [...document.querySelectorAll('.homePage,.page_cat')].find(el => el.offsetParent !== null);
+  sessionStorage.setItem('paginaAnterior', vis ? vis.id || 'homePage' : 'homePage');
+  document.querySelectorAll('.homePage,.page_cat,#adminPage').forEach(el => el.style.display = 'none');
+
+  const otrosVideos = VIDEO_NEWS.filter(v => v.id !== videoId).slice(0, 4);
+  const relHTML = otrosVideos.map(v=>`
+    <div class="art-rel-card" onclick="openVideoArticle('${v.id}')" style="cursor:pointer">
+      <div class="art-rel-img" style="position:relative;">
+        <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="${v.titulo}">
+        <span class="art-rel-cat">${v.categoria}</span>
+      </div>
+      <div class="art-rel-body">
+        <div class="art-rel-title">${v.titulo}</div>
+        <div class="art-rel-meta">${v.autor} · ${v.fecha}</div>
+      </div>
+    </div>`).join('');
+
+  const pg = document.getElementById('articlePage');
+  pg.innerHTML = `
+    <div class="article-wrap">
+      <div class="article-breadcrumb">
+        <a onclick="closeArticle()">Inicio</a><span>›</span>
+        <a onclick="closeArticle();mostrarCat('${vid.categoria}')">${vid.categoria}</a><span>›</span>
+        <span>${vid.titulo.substring(0,45)}${vid.titulo.length>45?'...':''}</span>
+      </div>
+      <div class="article-top-tag">${vid.categoria}</div>
+      <h1 class="article-title">${vid.titulo}</h1>
+      <p class="article-deck">${vid.resumen}</p>
+      <div class="article-meta">
+        <span class="author">&#9997; ${vid.autor}</span>
+        <span style="color:#2e2e2e">·</span>
+        <span>&#128197; ${vid.fecha}</span>
+      </div>
+      <div class="art_video_wrap" style="margin-top:0;">
+        <div class="art_video_label">&#9654; VIDEO</div>
+        <div class="art_video_frame">
+          <iframe src="https://www.youtube.com/embed/${vid.youtubeId}?rel=0&modestbranding=1&autoplay=1"
+            title="${vid.titulo}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+      <p class="article-img-caption" style="margin-top:6px;">&#9654; ${vid.titulo} · ${vid.autor}</p>
+      <div class="article-body">
+        <p>${vid.resumen}</p>
+        <p>Para ver el video completo, puede <a href="${vid.link}" target="_blank" rel="noopener" style="color:#e53e3e;font-weight:700;">verlo directamente en YouTube</a>.</p>
+      </div>
+      <button class="article-back-btn" onclick="closeArticle()">&#8592; Volver a ${vid.categoria}</button>
+    </div>
+    <section class="art-relacionados">
+      <div class="art-rel-inner">
+        <h2 class="art-rel-heading"><span class="art-rel-line"></span>Más videos<span class="art-rel-line"></span></h2>
+        <div class="art-rel-grid">${relHTML}</div>
+      </div>
+    </section>`;
+  pg.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ════════════════════════════════════════════════════
+//  CERRAR ARTÍCULO
+// ════════════════════════════════════════════════════
 function closeArticle() {
+  _pauseActive();
   document.getElementById('articlePage').style.display = 'none';
   const ant = sessionStorage.getItem('paginaAnterior') || 'homePage';
-  if (ant === 'home' || ant === 'homePage') {
-    document.querySelector('.homePage').style.display = 'block';
-  } else {
-    const el = document.getElementById(ant);
-    if (el) el.style.display = 'block';
-    else document.querySelector('.homePage').style.display = 'block';
-  }
+  if (ant === 'home' || ant === 'homePage') document.querySelector('.homePage').style.display = 'block';
+  else { const el = document.getElementById(ant); if(el) el.style.display='block'; else document.querySelector('.homePage').style.display='block'; }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function mostrarCat(cat) {
   document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el => el.style.display = 'none');
-  const map = { NOTICIAS: 'catNoticias', DEPORTES: 'catDeportes', CULTURA: 'catCultura', POLÍTICA: 'catPolitica' };
+  const map = { NOTICIAS:'catNoticias', DEPORTES:'catDeportes', CULTURA:'catCultura', POLÍTICA:'catPolitica' };
   const id = map[cat];
   if (id) document.getElementById(id).style.display = 'block';
   else document.querySelector('.homePage').style.display = 'block';
@@ -263,13 +489,26 @@ function mostrarCat(cat) {
 //  NAVEGACIÓN
 // ════════════════════════════════════════════════════
 function showHome(seccion) {
+  _pauseActive();
   document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el => el.style.display = 'none');
-  if (!seccion) { document.querySelector('.homePage').style.display = 'block'; return; }
-  const map = { noticias: 'catNoticias', deportes: 'catDeportes', cultura: 'catCultura', politica: 'catPolitica', todas: 'catTodas' };
-  const el = document.getElementById(map[seccion]);
+
+  if (!seccion) {
+    document.querySelector('.homePage').style.display = 'block';
+    renderVideoSection(); // sin filtro → todos los videos en HOME
+    return;
+  }
+
+  const pageMap = { noticias:'catNoticias', deportes:'catDeportes', cultura:'catCultura', politica:'catPolitica', todas:'catTodas' };
+  const el = document.getElementById(pageMap[seccion]);
   if (el) el.style.display = 'block';
+
+  // Renderizar videos filtrados por categoría dentro de la página
+  const catMap = { noticias:'NOTICIAS', deportes:'DEPORTES', cultura:'CULTURA', politica:'POLÍTICA' };
+  if (catMap[seccion]) renderVideoSection(catMap[seccion]);
 }
+
 function goHome() { showHome(); }
+
 function setActive(el) {
   document.querySelectorAll('.nav_linka a').forEach(a => a.classList.remove('active'));
   el.classList.add('active');
@@ -285,6 +524,7 @@ function abrirAdmin() {
   const clave = prompt('🔐 Contraseña de administrador:');
   if (clave === null) return;
   if (clave !== ADMIN_PASS) { alert('Contraseña incorrecta.'); return; }
+  _pauseActive();
   document.querySelectorAll('.homePage,.page_cat,#articlePage').forEach(el => el.style.display = 'none');
   document.getElementById('adminPage').style.display = 'block';
   adminLista();
@@ -292,8 +532,7 @@ function abrirAdmin() {
 
 function cerrarAdmin() {
   document.getElementById('adminPage').style.display = 'none';
-  _art = null;
-  renderHome();
+  _art = null; renderHome();
   document.querySelector('.homePage').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -302,31 +541,23 @@ function adminLista() {
   _art = null;
   const todos = dbGetAll();
   const pg = document.getElementById('adminPage');
-
   const filas = todos.length
     ? todos.map(a => `
         <tr onmouseover="this.style.background='#121212'" onmouseout="this.style.background=''">
           <td style="padding:12px 14px;font-family:monospace;font-size:.75em;color:#444">#${a.id}</td>
           <td style="padding:12px 14px"><span style="background:#1e1e1e;border:1px solid #2a2a2a;color:#c8b890;font-size:.62em;letter-spacing:.14em;font-weight:700;padding:3px 9px;border-radius:2px;text-transform:uppercase">${a.categoria}</span></td>
-          <td style="padding:12px 14px">
-            <div style="font-weight:600;color:#ddd;margin-bottom:3px">${a.titulo}</div>
-            <div style="font-size:.75em;color:#555">${a.autor} · ${a.fecha}</div>
-          </td>
+          <td style="padding:12px 14px"><div style="font-weight:600;color:#ddd;margin-bottom:3px">${a.titulo}</div><div style="font-size:.75em;color:#555">${a.autor} · ${a.fecha}</div></td>
           <td style="padding:12px 14px;text-align:right;white-space:nowrap">
             <button onclick="adminEditar(${a.id})" style="background:transparent;border:1px solid #3a3020;color:#c8b890;padding:5px 10px;font-family:inherit;font-size:.72em;border-radius:2px;cursor:pointer;margin-left:4px">✏ Editar</button>
             <button onclick="adminBorrar(${a.id})" style="background:transparent;border:1px solid #3a1a14;color:#c0604a;padding:5px 10px;font-family:inherit;font-size:.72em;border-radius:2px;cursor:pointer;margin-left:4px">🗑 Borrar</button>
           </td>
         </tr>`).join('')
     : `<tr><td colspan="4" style="text-align:center;padding:48px;color:#444">No hay artículos. Crea el primero.</td></tr>`;
-
   pg.innerHTML = `
     <div style="background:#0f0f0f;border-bottom:1px solid #1e1e1e;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100;font-family:'Arial Narrow',sans-serif">
       <div style="display:flex;align-items:center;gap:12px">
         <div style="width:38px;height:38px;background:#c8b890;color:#111;font-weight:900;display:flex;align-items:center;justify-content:center;border-radius:3px;font-size:.9em">RJ</div>
-        <div>
-          <div style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0ece0">Panel de Administración</div>
-          <div style="font-size:.72em;color:#555">${todos.length} artículo${todos.length !== 1 ? 's' : ''}</div>
-        </div>
+        <div><div style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0ece0">Panel de Administración</div><div style="font-size:.72em;color:#555">${todos.length} artículo${todos.length!==1?'s':''}</div></div>
       </div>
       <div style="display:flex;gap:10px">
         <button onclick="adminNuevo()" style="background:#c8b890;color:#111;border:none;padding:9px 18px;font-family:inherit;font-size:.82em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:3px;cursor:pointer">+ Nuevo artículo</button>
@@ -349,234 +580,235 @@ function adminLista() {
 }
 
 function adminNuevo() {
-  _art = { id: null, titulo: '', categoria: 'NOTICIAS', autor: '', fecha: _hoy(), tiempoLectura: '3 min', imagen: '', resumen: '', cuerpo: '', tags: [], relacionados: [] };
+  _art = { id:null, titulo:'', categoria:'NOTICIAS', autor:'', fecha:_hoy(), tiempoLectura:'3 min', imagen:'', resumen:'', cuerpo:'', tags:[], relacionados:[] };
   adminEditor();
 }
-
 function adminEditar(id) {
-  const a = dbGetById(id);
-  if (!a) { rjToast('Artículo no encontrado', 'err'); return; }
-  _art = { ...a, tags: [...(a.tags || [])], relacionados: [...(a.relacionados || [])] };
+  const a = dbGetById(id); if(!a){rjToast('Artículo no encontrado','err');return;}
+  _art = { ...a, tags:[...(a.tags||[])], relacionados:[...(a.relacionados||[])] };
   adminEditor();
 }
-
 function adminBorrar(id) {
   const a = dbGetById(id);
-  if (!a || !confirm(`¿Eliminar "${a.titulo}"?\nEsta acción no se puede deshacer.`)) return;
-  dbDelete(id);
-  renderHome();
-  adminLista();
-  rjToast('Artículo eliminado.');
+  if(!a||!confirm(`¿Eliminar "${a.titulo}"?\nEsta acción no se puede deshacer.`)) return;
+  dbDelete(id); renderHome(); adminLista(); rjToast('Artículo eliminado.');
 }
-
 function adminEditor() {
-  const a = _art;
-  const esNuevo = !a.id;
+  const a = _art; const esNuevo = !a.id;
   const pg = document.getElementById('adminPage');
-
-  const opCat = CATS_DB.map(c => `<option value="${c}"${c === a.categoria ? ' selected' : ''}>${c}</option>`).join('');
-  const otros = dbGetAll().filter(x => x.id && x.id !== a.id);
-  const opRel = otros.length
-    ? otros.map(x => `<option value="${x.id}"${(a.relacionados || []).includes(x.id) ? ' selected' : ''}>#${x.id} ${x.titulo.substring(0, 40)}</option>`).join('')
-    : '<option disabled>No hay otros artículos</option>';
-
-  const S = (s = '') => (s + '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
+  const opCat = CATS_DB.map(c=>`<option value="${c}"${c===a.categoria?' selected':''}>${c}</option>`).join('');
+  const otros = dbGetAll().filter(x=>x.id&&x.id!==a.id);
+  const opRel = otros.length ? otros.map(x=>`<option value="${x.id}"${(a.relacionados||[]).includes(x.id)?' selected':''}>#${x.id} ${x.titulo.substring(0,40)}</option>`).join('') : '<option disabled>No hay otros artículos</option>';
+  const S = (s='') => (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   pg.innerHTML = `
     <div style="background:#0f0f0f;border-bottom:1px solid #1e1e1e;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100;font-family:'Arial Narrow',sans-serif">
       <div style="display:flex;align-items:center;gap:12px">
         <button onclick="adminLista()" style="background:transparent;border:1px solid #2e2e2e;color:#c8b890;padding:7px 14px;font-family:inherit;font-size:.78em;border-radius:3px;cursor:pointer">← Volver</button>
-        <div style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0ece0;font-size:.95em">${esNuevo ? 'Nuevo artículo' : 'Editando #' + a.id}</div>
+        <div style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f0ece0;font-size:.95em">${esNuevo?'Nuevo artículo':'Editando #'+a.id}</div>
       </div>
       <button onclick="adminGuardar()" style="background:#c8b890;color:#111;border:none;padding:9px 20px;font-family:inherit;font-size:.82em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:3px;cursor:pointer">💾 Guardar</button>
     </div>
-
     <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;padding:20px 24px 60px;font-family:'Arial Narrow',sans-serif">
-
       <div style="display:flex;flex-direction:column;gap:16px">
-
         <div><label style="display:block;font-size:.68em;letter-spacing:.13em;text-transform:uppercase;color:#555;margin-bottom:5px">Titular *</label>
-        <input id="e_titulo" value="${S(a.titulo)}" placeholder="Escribe el titular..."
-          style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:11px 13px;font-family:Georgia,serif;font-size:1.05em;font-weight:700;border-radius:3px;outline:none"
-          oninput="_art.titulo=this.value" onfocus="this.style.borderColor='#c8b890'" onblur="this.style.borderColor='#262626'"></div>
-
+        <input id="e_titulo" value="${S(a.titulo)}" placeholder="Escribe el titular..." style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:11px 13px;font-family:Georgia,serif;font-size:1.05em;font-weight:700;border-radius:3px;outline:none" oninput="_art.titulo=this.value" onfocus="this.style.borderColor='#c8b890'" onblur="this.style.borderColor='#262626'"></div>
         <div><label style="display:block;font-size:.68em;letter-spacing:.13em;text-transform:uppercase;color:#555;margin-bottom:5px">Resumen *</label>
-        <textarea id="e_resumen" rows="3" placeholder="Texto breve que aparece en las tarjetas..."
-          style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:10px 13px;font-family:Georgia,serif;font-size:.9em;border-radius:3px;outline:none;resize:vertical;line-height:1.6"
-          oninput="_art.resumen=this.value" onfocus="this.style.borderColor='#c8b890'" onblur="this.style.borderColor='#262626'">${S(a.resumen)}</textarea></div>
-
+        <textarea id="e_resumen" rows="3" placeholder="Texto breve que aparece en las tarjetas..." style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:10px 13px;font-family:Georgia,serif;font-size:.9em;border-radius:3px;outline:none;resize:vertical;line-height:1.6" oninput="_art.resumen=this.value" onfocus="this.style.borderColor='#c8b890'" onblur="this.style.borderColor='#262626'">${S(a.resumen)}</textarea></div>
         <div>
-          <label style="display:block;font-size:.68em;letter-spacing:.13em;text-transform:uppercase;color:#555;margin-bottom:5px">Cuerpo * <span style="text-transform:none;letter-spacing:0;font-size:.9em;color:#444">— HTML: &lt;p&gt; &lt;h3&gt; &lt;blockquote&gt; &lt;strong&gt;</span></label>
-          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">
-            ${[['p','¶ P'],['h3','H3'],['bq','" Cita'],['b','B'],['i','I'],['ul','Lista']].map(([t,l])=>`<button type="button" onclick="adminFmt('${t}')" style="background:#161616;border:1px solid #2a2a2a;color:#888;padding:5px 9px;font-family:inherit;font-size:.72em;border-radius:2px;cursor:pointer">${l}</button>`).join('')}
-          </div>
-          <textarea id="e_cuerpo" rows="16" placeholder="<p>Escribe el cuerpo completo aquí...</p>"
-            style="width:100%;box-sizing:border-box;background:#0c0c0c;border:1px solid #262626;color:#a8d098;padding:10px 13px;font-family:'Courier New',monospace;font-size:.82em;border-radius:3px;outline:none;resize:vertical;line-height:1.7"
-            oninput="_art.cuerpo=this.value" onfocus="this.style.borderColor='#c8b890'" onblur="this.style.borderColor='#262626'">${S(a.cuerpo)}</textarea>
+          <label style="display:block;font-size:.68em;letter-spacing:.13em;text-transform:uppercase;color:#555;margin-bottom:5px">Cuerpo * <span style="text-transform:none;letter-spacing:0;font-size:.9em;color:#444">— HTML: &lt;p&gt; &lt;h3&gt; &lt;blockquote&gt;</span></label>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">${[['p','¶ P'],['h3','H3'],['bq','" Cita'],['b','B'],['i','I'],['ul','Lista']].map(([t,l])=>`<button type="button" onclick="adminFmt('${t}')" style="background:#161616;border:1px solid #2a2a2a;color:#888;padding:5px 9px;font-family:inherit;font-size:.72em;border-radius:2px;cursor:pointer">${l}</button>`).join('')}</div>
+          <textarea id="e_cuerpo" rows="16" placeholder="<p>Escribe el cuerpo completo aquí...</p>" style="width:100%;box-sizing:border-box;background:#0c0c0c;border:1px solid #262626;color:#a8d098;padding:10px 13px;font-family:'Courier New',monospace;font-size:.82em;border-radius:3px;outline:none;resize:vertical;line-height:1.7" oninput="_art.cuerpo=this.value" onfocus="this.style.borderColor='#c8b890'" onblur="this.style.borderColor='#262626'">${S(a.cuerpo)}</textarea>
         </div>
       </div>
-
       <div style="display:flex;flex-direction:column;gap:12px">
-
         <div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:4px;padding:14px">
           <div style="font-size:.68em;letter-spacing:.14em;text-transform:uppercase;color:#555;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">📋 Información</div>
-          <div style="margin-bottom:10px"><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Categoría</label>
-          <select id="e_cat" onchange="_art.categoria=this.value" style="width:100%;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none">${opCat}</select></div>
-          <div style="margin-bottom:10px"><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Autor *</label>
-          <input id="e_autor" value="${S(a.autor)}" placeholder="Nombre del autor" oninput="_art.autor=this.value"
-            style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none"></div>
-          <div style="margin-bottom:10px"><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Fecha</label>
-          <input id="e_fecha" value="${S(a.fecha)}" placeholder="28 de febrero de 2026" oninput="_art.fecha=this.value"
-            style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none"></div>
-          <div><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Tiempo de lectura</label>
-          <input id="e_lectura" value="${S(a.tiempoLectura || '3 min')}" placeholder="3 min" oninput="_art.tiempoLectura=this.value"
-            style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none"></div>
+          <div style="margin-bottom:10px"><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Categoría</label><select id="e_cat" onchange="_art.categoria=this.value" style="width:100%;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none">${opCat}</select></div>
+          <div style="margin-bottom:10px"><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Autor *</label><input id="e_autor" value="${S(a.autor)}" placeholder="Nombre del autor" oninput="_art.autor=this.value" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none"></div>
+          <div style="margin-bottom:10px"><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Fecha</label><input id="e_fecha" value="${S(a.fecha)}" placeholder="28 de febrero de 2026" oninput="_art.fecha=this.value" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none"></div>
+          <div><label style="display:block;font-size:.65em;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Tiempo de lectura</label><input id="e_lectura" value="${S(a.tiempoLectura||'3 min')}" placeholder="3 min" oninput="_art.tiempoLectura=this.value" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.85em;border-radius:3px;outline:none"></div>
         </div>
-
         <div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:4px;padding:14px">
           <div style="font-size:.68em;letter-spacing:.14em;text-transform:uppercase;color:#555;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">🖼 Imagen</div>
           <small style="color:#555;font-size:.72em;display:block;margin-bottom:8px">Pega una URL de imagen (https://...)</small>
-          <input id="e_img" value="${S(a.imagen)}" placeholder="https://ejemplo.com/imagen.jpg"
-            style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.8em;border-radius:3px;outline:none;margin-bottom:8px"
-            oninput="_art.imagen=this.value;document.getElementById('e_imgprev').src=this.value">
-          <div style="height:90px;border-radius:3px;overflow:hidden;background:#1a1a1a;display:flex;align-items:center;justify-content:center">
-            <img id="e_imgprev" src="${S(a.imagen)}" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover">
-          </div>
+          <input id="e_img" value="${S(a.imagen)}" placeholder="https://ejemplo.com/imagen.jpg" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.8em;border-radius:3px;outline:none;margin-bottom:8px" oninput="_art.imagen=this.value;document.getElementById('e_imgprev').src=this.value">
+          <div style="height:90px;border-radius:3px;overflow:hidden;background:#1a1a1a;display:flex;align-items:center;justify-content:center"><img id="e_imgprev" src="${S(a.imagen)}" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover"></div>
         </div>
-
         <div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:4px;padding:14px">
           <div style="font-size:.68em;letter-spacing:.14em;text-transform:uppercase;color:#555;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">🏷 Tags</div>
-          <input id="e_tags" value="${(a.tags || []).join(', ')}" placeholder="salud, vacunación, jamundí"
-            style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.8em;border-radius:3px;outline:none"
-            oninput="_art.tags=this.value.split(',').map(t=>t.trim()).filter(Boolean)">
+          <input id="e_tags" value="${(a.tags||[]).join(', ')}" placeholder="salud, vacunación, jamundí" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #262626;color:#e0dbd0;padding:8px 10px;font-family:inherit;font-size:.8em;border-radius:3px;outline:none" oninput="_art.tags=this.value.split(',').map(t=>t.trim()).filter(Boolean)">
         </div>
-
         <div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:4px;padding:14px">
           <div style="font-size:.68em;letter-spacing:.14em;text-transform:uppercase;color:#555;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">🔗 Relacionados</div>
           <small style="color:#444;font-size:.72em;display:block;margin-bottom:6px">Ctrl+clic para seleccionar varios</small>
-          <select id="e_rel" multiple style="width:100%;height:110px;background:#111;border:1px solid #262626;color:#e0dbd0;padding:6px;font-family:inherit;font-size:.78em;border-radius:3px;outline:none"
-            onchange="_art.relacionados=Array.from(this.selectedOptions).map(o=>Number(o.value))">${opRel}</select>
+          <select id="e_rel" multiple style="width:100%;height:110px;background:#111;border:1px solid #262626;color:#e0dbd0;padding:6px;font-family:inherit;font-size:.78em;border-radius:3px;outline:none" onchange="_art.relacionados=Array.from(this.selectedOptions).map(o=>Number(o.value))">${opRel}</select>
         </div>
-
       </div>
     </div>`;
 }
 
 function adminGuardar() {
-  if (!_art.titulo || !_art.titulo.trim()) { rjToast('El titular es obligatorio', 'err'); return; }
-  if (!_art.resumen || !_art.resumen.trim()) { rjToast('El resumen es obligatorio', 'err'); return; }
-  if (!_art.cuerpo || !_art.cuerpo.trim()) { rjToast('El cuerpo es obligatorio', 'err'); return; }
-  if (!_art.autor || !_art.autor.trim()) { rjToast('El autor es obligatorio', 'err'); return; }
-  const guardado = dbSave(_art);
-  _art = null;
-  renderHome();
-  adminLista();
-  rjToast('✓ Artículo #' + guardado.id + ' guardado.');
+  if(!_art.titulo||!_art.titulo.trim()){rjToast('El titular es obligatorio','err');return;}
+  if(!_art.resumen||!_art.resumen.trim()){rjToast('El resumen es obligatorio','err');return;}
+  if(!_art.cuerpo||!_art.cuerpo.trim()){rjToast('El cuerpo es obligatorio','err');return;}
+  if(!_art.autor||!_art.autor.trim()){rjToast('El autor es obligatorio','err');return;}
+  const guardado = dbSave(_art); _art=null; renderHome(); adminLista();
+  rjToast('✓ Artículo #'+guardado.id+' guardado.');
 }
 
 function adminFmt(t) {
-  const ta = document.getElementById('e_cuerpo');
-  if (!ta) return;
-  const sel = ta.value.substring(ta.selectionStart, ta.selectionEnd) || 'Texto aquí';
-  const map = {
-    p:  `<p>${sel}</p>`,
-    h3: `<h3>${sel}</h3>`,
-    bq: `<blockquote>${sel}</blockquote>`,
-    b:  `<strong>${sel}</strong>`,
-    i:  `<em>${sel}</em>`,
-    ul: `<ul>\n  <li>${sel}</li>\n  <li>Otro</li>\n</ul>`
-  };
-  const ins = map[t] || '';
-  const s = ta.selectionStart;
-  ta.value = ta.value.substring(0, s) + ins + ta.value.substring(ta.selectionEnd);
-  ta.dispatchEvent(new Event('input'));
-  ta.focus();
-  ta.selectionStart = ta.selectionEnd = s + ins.length;
+  const ta = document.getElementById('e_cuerpo'); if(!ta) return;
+  const sel = ta.value.substring(ta.selectionStart,ta.selectionEnd)||'Texto aquí';
+  const map = {p:`<p>${sel}</p>`,h3:`<h3>${sel}</h3>`,bq:`<blockquote>${sel}</blockquote>`,b:`<strong>${sel}</strong>`,i:`<em>${sel}</em>`,ul:`<ul>\n  <li>${sel}</li>\n  <li>Otro</li>\n</ul>`};
+  const ins = map[t]||''; const s = ta.selectionStart;
+  ta.value = ta.value.substring(0,s)+ins+ta.value.substring(ta.selectionEnd);
+  ta.dispatchEvent(new Event('input')); ta.focus();
+  ta.selectionStart = ta.selectionEnd = s+ins.length;
 }
 
 // ════════════════════════════════════════════════════
-//  CARRUSEL
+//  CARRUSEL DE NOTICIAS
 // ════════════════════════════════════════════════════
 let _carouselIndex = 0;
-
 function _cardWidth() {
-  const track = document.getElementById('allNewsGrid');
-  if (!track || !track.children.length) return 242;
-  return track.children[0].offsetWidth + 2;
+  const t = document.getElementById('allNewsGrid');
+  if(!t||!t.children.length) return 242;
+  return t.children[0].offsetWidth + 2;
 }
-
 function carouselScroll(dir) {
-  const track = document.getElementById('allNewsGrid');
-  if (!track) return;
-  const outer = track.parentElement;
-  const cw = _cardWidth();
-  const visible = Math.floor(outer.offsetWidth / cw);
-  const maxIndex = Math.max(0, track.children.length - visible);
-  _carouselIndex = Math.min(Math.max(_carouselIndex + dir, 0), maxIndex);
-  track.style.transform = 'translateX(-' + (_carouselIndex * cw) + 'px)';
+  const track = document.getElementById('allNewsGrid'); if(!track) return;
+  const outer = track.parentElement; const cw = _cardWidth();
+  const visible = Math.floor(outer.offsetWidth/cw);
+  const maxIndex = Math.max(0,track.children.length-visible);
+  _carouselIndex = Math.min(Math.max(_carouselIndex+dir,0),maxIndex);
+  track.style.transform = 'translateX(-'+(_carouselIndex*cw)+'px)';
   const prev = document.getElementById('carouselPrev');
   const next = document.getElementById('carouselNext');
-  if (prev) prev.style.opacity = _carouselIndex === 0 ? '0.35' : '1';
-  if (next) next.style.opacity = _carouselIndex >= maxIndex ? '0.35' : '1';
+  if(prev) prev.style.opacity = _carouselIndex===0?'0.35':'1';
+  if(next) next.style.opacity = _carouselIndex>=maxIndex?'0.35':'1';
 }
 
 // ════════════════════════════════════════════════════
 //  UTILIDADES
 // ════════════════════════════════════════════════════
-function _hoy() {
-  return new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
-}
-
+function _hoy() { return new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}); }
 let _toastT;
-function rjToast(msg, tipo = 'ok') {
-  const t = document.getElementById('rjToast');
-  t.textContent = msg;
-  t.className = tipo === 'err' ? 'show err' : 'show';
-  clearTimeout(_toastT);
-  _toastT = setTimeout(() => t.className = '', 3200);
+function rjToast(msg, tipo='ok') {
+  const t = document.getElementById('rjToast'); t.textContent = msg;
+  t.className = tipo==='err'?'show err':'show'; clearTimeout(_toastT);
+  _toastT = setTimeout(()=>t.className='', 3200);
 }
 
 // ════════════════════════════════════════════════════
-//  RADIO PLAYER — con reconexión automática
+//  RADIO PLAYER
 // ════════════════════════════════════════════════════
 var _radioPlaying = false;
-
 function toggleRadio() {
   var audio = document.getElementById('miReproductor');
   var icon  = document.getElementById('radioPlayIcon');
   var label = document.getElementById('radioPlayLabel');
-
   if (_radioPlaying) {
-    audio.pause();
-    audio.removeAttribute('src');
-    audio.load();
-    icon.textContent  = '▶';
-    label.textContent = 'Escuchar en vivo';
-    _radioPlaying = false;
+    audio.pause(); audio.removeAttribute('src'); audio.load();
+    icon.textContent='▶'; label.textContent='Escuchar en vivo'; _radioPlaying=false;
   } else {
-    icon.textContent  = '⏳';
-    label.textContent = 'Conectando...';
-    audio.src = 'https://icecast.radiojamundi.com/jamundi.mp3';
-    audio.load();
+    icon.textContent='⏳'; label.textContent='Conectando...';
+    audio.src='https://icecast.radiojamundi.com/jamundi.mp3'; audio.load();
     audio.play()
-      .then(function() {
-        icon.textContent  = '⏹';
-        label.textContent = 'En vivo · Transmitiendo';
-        _radioPlaying = true;
-      })
-      .catch(function(err) {
-        icon.textContent  = '▶';
-        label.textContent = 'Error · Reintentar';
-        _radioPlaying = false;
-        console.error('Radio error:', err);
-      });
+      .then(()=>{ icon.textContent='⏹'; label.textContent='En vivo · Transmitiendo'; _radioPlaying=true; })
+      .catch(()=>{ icon.textContent='▶'; label.textContent='Error · Reintentar'; _radioPlaying=false; });
   }
 }
 
-// ── Iniciar al cargar ──────────────────────────────
+// ════════════════════════════════════════════════════
+//  CSS DE VIDEOS — inyectado dinámicamente
+//  (así no necesitas tocar css.css)
+// ════════════════════════════════════════════════════
+(function injectVideoCSS() {
+  const style = document.createElement('style');
+  style.textContent = `
+    /* ── BADGE VIDEO ── */
+    .rj_vbadge {
+      background: #e3000f;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 3px;
+      letter-spacing: 1px;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
+    /* ── TARJETA ── */
+    .rj_vcard {
+      flex: 0 0 280px;
+      background: #fff;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.10);
+      cursor: pointer;
+      transition: box-shadow .2s;
+    }
+    .rj_vcard:hover { box-shadow: 0 4px 16px rgba(0,0,0,.18); }
+
+    /* ── ÁREA DE VIDEO (16:9) ── */
+    .rj_vcard_video {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #111;
+      overflow: hidden;
+    }
+    .rj_vcard_thumb {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: opacity .3s;
+    }
+
+    /* Estado reproduciendo: oculta miniatura y overlay, muestra iframe */
+    .rj_vcard_video.vcard_playing .rj_vcard_thumb         { opacity: 0; pointer-events: none; }
+    .rj_vcard_video.vcard_playing .rj_vcard_play_overlay  { opacity: 0; pointer-events: none; }
+    .rj_vcard_video.vcard_playing iframe                  { opacity: 1 !important; pointer-events: all !important; }
+
+    /* ── OVERLAY ▶ ── */
+    .rj_vcard_play_overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.18);
+      transition: opacity .2s;
+      z-index: 2;
+    }
+    .rj_vcard_play_btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: #e3000f;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 12px rgba(227,0,15,.45);
+      transition: transform .15s;
+    }
+    .rj_vcard:hover .rj_vcard_play_btn { transform: scale(1.08); }
+    .rj_vcard_play_btn svg { margin-left: 4px; }
+
+    /* ── CUERPO ── */
+    .rj_vcard_body     { padding: 12px 14px 14px; }
+    .rj_vcard_cat      { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #e3000f; margin-bottom: 5px; }
+    .rj_vcard_title    { font-size: 15px; font-weight: 700; line-height: 1.3; color: #111; margin-bottom: 6px; }
+    .rj_vcard_meta     { font-size: 11px; color: #888; margin-bottom: 8px; }
+    .rj_vcard_readmore { font-size: 11px; font-weight: 700; letter-spacing: .5px; color: #e3000f; text-decoration: none; text-transform: uppercase; }
+    .rj_vcard_readmore:hover { text-decoration: underline; }
+  `;
+  document.head.appendChild(style);
+})();
+
+// ════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   renderHome();
   setTimeout(() => carouselScroll(0), 100);
 });
-
-//COMENTARIO//
