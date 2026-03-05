@@ -44,6 +44,7 @@ function dbDelete(id) { localStorage.setItem(DB_KEY, JSON.stringify(dbGetAll().f
 const CATS_DB = ["NOTICIAS", "POLÍTICA", "DEPORTES", "CULTURA"];
 
 // ════════════════════════════════════════════════════
+<<<<<<< HEAD
 //  BASE DE DATOS DE VIDEOS
 // ════════════════════════════════════════════════════
 const VIDEO_NEWS = [
@@ -241,6 +242,134 @@ function videoCarouselScroll(dir, suffix) {
 }
 
 // ════════════════════════════════════════════════════
+=======
+//  BASE DE DATOS DE VIDEOS — Noticias de Colombia
+// ════════════════════════════════════════════════════
+const VIDEO_NEWS = [
+  {
+    id: 'v1',
+    titulo: "Colombia clasifica al Mundial 2026: la noche que paralizó al país",
+    categoria: "DEPORTES",
+    autor: "Redacción Deportes",
+    fecha: "4 de septiembre de 2025",
+    youtubeId: "Cz2xm4VWzJE",
+    link: "https://www.youtube.com/watch?v=Cz2xm4VWzJE",
+    resumen: "Resumen y goles del partido Colombia vs Bolivia. La Selección goleó 3-0 y selló su clasificación al Mundial 2026."
+  },
+  {
+    id: 'v2',
+    titulo: "Fuerte sismo de 6.3 sacude el centro de Colombia",
+    categoria: "NOTICIAS",
+    autor: "Redacción Noticias",
+    fecha: "9 de junio de 2025",
+    youtubeId: "2BM1ImeIjSc",
+    link: "https://www.youtube.com/watch?v=2BM1ImeIjSc",
+    resumen: "Un terremoto de magnitud 6.3 con epicentro en Paratebueno sacudió Cundinamarca, Boyacá y Meta."
+  },
+  {
+    id: 'v3',
+    titulo: "Deportivo Cali vs La Equidad: resumen Liga BetPlay 2025",
+    categoria: "DEPORTES",
+    autor: "Juan López",
+    fecha: "18 de mayo de 2025",
+    youtubeId: "fi7rsOd16Gw",
+    link: "https://www.youtube.com/watch?v=fi7rsOd16Gw",
+    resumen: "Resumen completo del partido entre Deportivo Cali y La Equidad por la Liga Colombiana 2025-I."
+  },
+  {
+    id: 'v4',
+    titulo: "Congreso rechaza reforma tributaria propuesta por Petro",
+    categoria: "POLÍTICA",
+    autor: "Redacción Política",
+    fecha: "15 de agosto de 2025",
+    youtubeId: "xNjh-wQ07Cw",
+    link: "https://www.youtube.com/watch?v=xNjh-wQ07Cw",
+    resumen: "El Congreso colombiano rechazó la reforma tributaria que buscaba recaudar aproximadamente $9.8 billones."
+  },
+  {
+    id: 'v5',
+    titulo: "Colombia vs Perú: eliminatorias al Mundial 2026",
+    categoria: "DEPORTES",
+    autor: "Redacción Deportes",
+    fecha: "15 de septiembre de 2025",
+    youtubeId: "aNbCHHqnakw",
+    link: "https://www.youtube.com/watch?v=aNbCHHqnakw",
+    resumen: "Resumen y análisis del partido Colombia vs Perú por las eliminatorias sudamericanas rumbo al Mundial 2026."
+  },
+  {
+    id: 'v6',
+    titulo: "Sismo de 6.5 sacude gran parte de Colombia",
+    categoria: "NOTICIAS",
+    autor: "Redacción Noticias",
+    fecha: "22 de junio de 2025",
+    youtubeId: "UvdFN_-IMw8",
+    link: "https://www.youtube.com/watch?v=UvdFN_-IMw8",
+    resumen: "Un fuerte terremoto de magnitud 6.5 se sintió en Cundinamarca, Boyacá, Meta y gran parte del territorio colombiano."
+  },
+  {
+    id: 'v7',
+    titulo: "Ley de financiamiento 2026: debate en el Congreso",
+    categoria: "POLÍTICA",
+    autor: "Redacción Política",
+    fecha: "10 de septiembre de 2025",
+    youtubeId: "lHYHWwefArQ",
+    link: "https://www.youtube.com/watch?v=lHYHWwefArQ",
+    resumen: "El gobierno propone ley de financiamiento de $26.3 billones para el presupuesto general de la nación 2026."
+  },
+  {
+    id: 'v8',
+    titulo: "Colombia lista para el Mundial 2026: análisis y expectativas",
+    categoria: "DEPORTES",
+    autor: "Redacción Deportes",
+    fecha: "20 de septiembre de 2025",
+    youtubeId: "3HH4fmm6mhs",
+    link: "https://www.youtube.com/watch?v=3HH4fmm6mhs",
+    resumen: "Análisis completo de la Selección Colombia rumbo al Mundial 2026: figuras, estadísticas y expectativas."
+  },
+  {
+    id: 'v9',
+    titulo: "Temblor de 5.4 sacude Medellín y Antioquia",
+    categoria: "NOTICIAS",
+    autor: "Redacción Noticias",
+    fecha: "14 de septiembre de 2025",
+    youtubeId: "3x2BH_gFy2s",
+    link: "https://www.youtube.com/watch?v=3x2BH_gFy2s",
+    resumen: "Sismo de magnitud 5.4 cerca de Uramita sacudió Medellín y gran parte de Antioquia."
+  },
+  {
+    id: 'v10',
+    titulo: "Debate por referendo de reforma laboral en Colombia",
+    categoria: "POLÍTICA",
+    autor: "Redacción Política",
+    fecha: "5 de julio de 2025",
+    youtubeId: "A_U4kO9m788",
+    link: "https://www.youtube.com/watch?v=A_U4kO9m788",
+    resumen: "El presidente Petro convoca referendo por reforma laboral para el 7 de agosto. Análisis del debate político."
+  },
+  {
+    id: 'v11',
+    titulo: "Terremoto de 6.0 con epicentro en Venezuela se siente en Colombia",
+    categoria: "NOTICIAS",
+    autor: "Redacción Noticias",
+    fecha: "24 de septiembre de 2025",
+    youtubeId: "-XLb-PiUGuo",
+    link: "https://www.youtube.com/watch?v=-XLb-PiUGuo",
+    resumen: "Sismo de magnitud 6.0 con epicentro en Venezuela sacudió Cartagena y la costa norte colombiana."
+  },
+  {
+    id: 'v12',
+    titulo: "Sismo de 4.8 en Santander se siente en Bogotá",
+    categoria: "NOTICIAS",
+    autor: "Redacción Noticias",
+    fecha: "30 de agosto de 2025",
+    youtubeId: "zeD_tU8J2l0",
+    link: "https://www.youtube.com/watch?v=zeD_tU8J2l0",
+    resumen: "Temblor de magnitud 4.8 en Santander se sintió con fuerza en la capital colombiana."
+  }
+];
+
+// ════════════════════════════════════════════════════
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
 //  RENDERIZADO DINÁMICO
 // ════════════════════════════════════════════════════
 function renderHome() {
@@ -345,8 +474,87 @@ function renderHome() {
     el.innerHTML = html;
   });
 
+<<<<<<< HEAD
   // ── SECCIÓN DE VIDEOS (HOME) ──
   renderVideoSection();
+=======
+  // ══════════════════════════════════════════
+  //  RENDERIZAR SECCIÓN NOTICIAS EN VIDEO
+  // ══════════════════════════════════════════
+  renderVideoSection();
+}
+
+// ════════════════════════════════════════════════════
+//  SECCIÓN NOTICIAS EN VIDEO — Render
+// ════════════════════════════════════════════════════
+let _videoCarouselIndex = 0;
+
+function renderVideoSection(filterCat) {
+  const section = document.getElementById('videoSection');
+  const grid = document.getElementById('videoGrid');
+  const countEl = document.getElementById('videoCount');
+  if (!section || !grid) return;
+
+  // Filtrar por categoría si se especifica
+  let videos = filterCat
+    ? VIDEO_NEWS.filter(v => v.categoria === filterCat)
+    : VIDEO_NEWS;
+
+  if (videos.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  _videoCarouselIndex = 0;
+  grid.style.transform = 'translateX(0)';
+
+  grid.innerHTML = videos.map(v => `
+    <div class="rj_vcard" onclick="openVideoArticle('${v.id}')">
+      <div class="rj_vcard_video">
+        <iframe src="https://www.youtube.com/embed/${v.youtubeId}?rel=0&modestbranding=1"
+          title="${v.titulo}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+        <div class="rj_vcard_play_overlay">
+          <span>&#9654;</span>
+        </div>
+      </div>
+      <div class="rj_vcard_body">
+        <div class="rj_vcard_cat">${v.categoria}</div>
+        <div class="rj_vcard_title">${v.titulo}</div>
+        <div class="rj_vcard_meta">${v.autor} · ${v.fecha}</div>
+        <a class="rj_vcard_readmore" href="javascript:void(0)" onclick="event.stopPropagation();openVideoArticle('${v.id}')">LEER NOTA COMPLETA &rarr;</a>
+      </div>
+    </div>`).join('');
+
+  if (countEl) countEl.textContent = videos.length + ' VIDEO' + (videos.length !== 1 ? 'S' : '');
+
+  setTimeout(() => videoCarouselScroll(0), 100);
+}
+
+// ════════════════════════════════════════════════════
+//  CARRUSEL DE VIDEOS — Navegación
+// ════════════════════════════════════════════════════
+function _videoCardWidth() {
+  const track = document.getElementById('videoGrid');
+  if (!track || !track.children.length) return 302;
+  return track.children[0].offsetWidth + 2;
+}
+
+function videoCarouselScroll(dir) {
+  const track = document.getElementById('videoGrid');
+  if (!track) return;
+  const outer = track.parentElement;
+  const cw = _videoCardWidth();
+  const visible = Math.floor(outer.offsetWidth / cw);
+  const maxIndex = Math.max(0, track.children.length - visible);
+  _videoCarouselIndex = Math.min(Math.max(_videoCarouselIndex + dir, 0), maxIndex);
+  track.style.transform = 'translateX(-' + (_videoCarouselIndex * cw) + 'px)';
+  const prev = document.getElementById('videoPrev');
+  const next = document.getElementById('videoNext');
+  if (prev) prev.style.opacity = _videoCarouselIndex === 0 ? '0.35' : '1';
+  if (next) next.style.opacity = _videoCarouselIndex >= maxIndex ? '0.35' : '1';
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
 }
 
 // ════════════════════════════════════════════════════
@@ -371,7 +579,11 @@ function openArticle(id) {
       <div class="article-breadcrumb">
         <a onclick="closeArticle()">Inicio</a><span>›</span>
         <a onclick="closeArticle();mostrarCat('${art.categoria}')">${art.categoria}</a><span>›</span>
+<<<<<<< HEAD
         <span>${art.titulo.substring(0,45)}${art.titulo.length>45?'...':''}</span>
+=======
+        <span>${art.titulo.substring(0, 45)}${art.titulo.length > 45 ? '...' : ''}</span>
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
       </div>
       <div class="article-top-tag">${art.categoria}</div>
       <h1 class="article-title">${art.titulo}</h1>
@@ -379,6 +591,7 @@ function openArticle(id) {
       <div class="article-meta">
         <span class="author">&#9997; ${art.autor}</span>
         <span style="color:#2e2e2e">·</span>
+<<<<<<< HEAD
         <span>&#128336; ${art.tiempoLectura||'3 min'}</span>
         <span style="color:#2e2e2e">·</span>
         <span>&#128197; ${art.fecha}</span>
@@ -387,6 +600,18 @@ function openArticle(id) {
       <p class="article-img-caption">&#128247; Imagen ilustrativa · Radio Jamundi</p>
       <div class="article-body">${art.cuerpo}</div>
       <div class="art-tags">${(art.tags||[]).map(t=>`<span class="art-tag">#${t}</span>`).join('')}</div>
+=======
+        <span>&#128336; ${art.tiempoLectura || '3 min'}</span>
+        <span style="color:#2e2e2e">·</span>
+        <span>&#128197; ${art.fecha}</span>
+      </div>
+      <div class="article-hero-img">
+        <img src="${art.imagen}" alt="${art.titulo}" onerror="this.style.display='none'">
+      </div>
+      <p class="article-img-caption">&#128247; Imagen ilustrativa · Radio Jamundi</p>
+      <div class="article-body">${art.cuerpo}</div>
+      <div class="art-tags">${tagsHTML}</div>
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
       <button class="article-back-btn" onclick="closeArticle()">&#8592; Volver a ${art.categoria}</button>
     </div>
     <section class="art-relacionados">
@@ -400,11 +625,16 @@ function openArticle(id) {
 }
 
 // ════════════════════════════════════════════════════
+<<<<<<< HEAD
 //  ABRIR ARTÍCULO DE VIDEO
+=======
+//  ABRIR ARTÍCULO DE VIDEO (solo para tarjetas de video)
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
 // ════════════════════════════════════════════════════
 function openVideoArticle(videoId) {
   const vid = VIDEO_NEWS.find(v => v.id === videoId);
   if (!vid) { alert('Video no encontrado.'); return; }
+<<<<<<< HEAD
   _pauseActive();
   const vis = [...document.querySelectorAll('.homePage,.page_cat')].find(el => el.offsetParent !== null);
   sessionStorage.setItem('paginaAnterior', vis ? vis.id || 'homePage' : 'homePage');
@@ -422,14 +652,34 @@ function openVideoArticle(videoId) {
         <div class="art-rel-meta">${v.autor} · ${v.fecha}</div>
       </div>
     </div>`).join('');
+=======
+
+  const vis = [...document.querySelectorAll('.homePage,.page_cat')]
+    .find(el => el.offsetParent !== null);
+  sessionStorage.setItem('paginaAnterior', vis ? vis.id || 'homePage' : 'homePage');
+
+  document.querySelectorAll('.homePage,.page_cat,#adminPage').forEach(el => el.style.display = 'none');
+
+  // Buscar otros videos de la misma categoria para "relacionados"
+  const otrosVideos = VIDEO_NEWS.filter(v => v.id !== videoId).slice(0, 4);
+  const relHTML = otrosVideos.length
+    ? otrosVideos.map(v => `<div class="art-rel-card" onclick="openVideoArticle('${v.id}')" style="cursor:pointer"><div class="art-rel-img" style="position:relative;"><img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="${v.titulo}"><span class="art-rel-cat">${v.categoria}</span></div><div class="art-rel-body"><div class="art-rel-title">${v.titulo}</div><div class="art-rel-meta">${v.autor} · ${v.fecha}</div></div></div>`).join('')
+    : '<p class="art-no-rel">No hay videos relacionados.</p>';
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
 
   const pg = document.getElementById('articlePage');
   pg.innerHTML = `
     <div class="article-wrap">
       <div class="article-breadcrumb">
+<<<<<<< HEAD
         <a onclick="closeArticle()">Inicio</a><span>›</span>
         <a onclick="closeArticle();mostrarCat('${vid.categoria}')">${vid.categoria}</a><span>›</span>
         <span>${vid.titulo.substring(0,45)}${vid.titulo.length>45?'...':''}</span>
+=======
+        <a onclick="closeArticle()">Inicio</a><span>&#8250;</span>
+        <a onclick="closeArticle();mostrarCat('${vid.categoria}')">${vid.categoria}</a><span>&#8250;</span>
+        <span>${vid.titulo.substring(0, 45)}${vid.titulo.length > 45 ? '...' : ''}</span>
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
       </div>
       <div class="article-top-tag">${vid.categoria}</div>
       <h1 class="article-title">${vid.titulo}</h1>
@@ -443,8 +693,12 @@ function openVideoArticle(videoId) {
         <div class="art_video_label">&#9654; VIDEO</div>
         <div class="art_video_frame">
           <iframe src="https://www.youtube.com/embed/${vid.youtubeId}?rel=0&modestbranding=1&autoplay=1"
+<<<<<<< HEAD
             title="${vid.titulo}"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+=======
+            title="${vid.titulo}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
             allowfullscreen loading="lazy"></iframe>
         </div>
       </div>
@@ -457,7 +711,11 @@ function openVideoArticle(videoId) {
     </div>
     <section class="art-relacionados">
       <div class="art-rel-inner">
+<<<<<<< HEAD
         <h2 class="art-rel-heading"><span class="art-rel-line"></span>Más videos<span class="art-rel-line"></span></h2>
+=======
+        <h2 class="art-rel-heading"><span class="art-rel-line"></span>Mas videos<span class="art-rel-line"></span></h2>
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
         <div class="art-rel-grid">${relHTML}</div>
       </div>
     </section>`;
@@ -465,9 +723,12 @@ function openVideoArticle(videoId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+<<<<<<< HEAD
 // ════════════════════════════════════════════════════
 //  CERRAR ARTÍCULO
 // ════════════════════════════════════════════════════
+=======
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
 function closeArticle() {
   _pauseActive();
   document.getElementById('articlePage').style.display = 'none';
@@ -491,6 +752,7 @@ function mostrarCat(cat) {
 function showHome(seccion) {
   _pauseActive();
   document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el => el.style.display = 'none');
+<<<<<<< HEAD
 
   if (!seccion) {
     document.querySelector('.homePage').style.display = 'block';
@@ -505,6 +767,25 @@ function showHome(seccion) {
   // Renderizar videos filtrados por categoría dentro de la página
   const catMap = { noticias:'NOTICIAS', deportes:'DEPORTES', cultura:'CULTURA', politica:'POLÍTICA' };
   if (catMap[seccion]) renderVideoSection(catMap[seccion]);
+=======
+  if (!seccion) {
+    document.querySelector('.homePage').style.display = 'block';
+    // Al volver a inicio, mostrar todos los videos
+    renderVideoSection();
+    return;
+  }
+  const map = { noticias: 'catNoticias', deportes: 'catDeportes', cultura: 'catCultura', politica: 'catPolitica', todas: 'catTodas' };
+  const el = document.getElementById(map[seccion]);
+  if (el) el.style.display = 'block';
+
+  // Filtrar videos por categoría cuando se navega a una sección
+  const catMap = { noticias: 'NOTICIAS', deportes: 'DEPORTES', cultura: 'CULTURA', politica: 'POLÍTICA' };
+  if (catMap[seccion]) {
+    renderVideoSection(catMap[seccion]);
+  } else {
+    renderVideoSection(); // "todas" muestra todos los videos
+  }
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
 }
 
 function goHome() { showHome(); }
@@ -690,8 +971,16 @@ function carouselScroll(dir) {
 
 // ════════════════════════════════════════════════════
 //  UTILIDADES
+<<<<<<< HEAD
 // ════════════════════════════════════════════════════
 function _hoy() { return new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'}); }
+=======
+// ════════════════════════════════���═══════════════════
+function _hoy() {
+  return new Date().toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
 let _toastT;
 function rjToast(msg, tipo='ok') {
   const t = document.getElementById('rjToast'); t.textContent = msg;
@@ -811,4 +1100,10 @@ function toggleRadio() {
 document.addEventListener('DOMContentLoaded', () => {
   renderHome();
   setTimeout(() => carouselScroll(0), 100);
+<<<<<<< HEAD
 });
+=======
+});
+
+//COMENTARIO//
+>>>>>>> 1c4e1c6a276c492f1fc1df01d5497fcc4a640731
