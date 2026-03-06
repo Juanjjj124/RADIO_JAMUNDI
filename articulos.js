@@ -661,7 +661,7 @@ function rjToast(msg, tipo='ok') {
 //  HLS STREAM LOADER
 // ════════════════════════════════════════════════════
 function loadStream(audioEl) {
-  var url = 'https://streaming.totalmedios.com.co/live/chontico/index.m3u8';
+  var url = 'https://icecast.radiojamundi.com/jamundi.mp3';
   if (audioEl.canPlayType('application/vnd.apple.mpegurl')) {
     audioEl.src = url; audioEl.load();
   } else if (window.Hls && Hls.isSupported()) {
@@ -687,6 +687,10 @@ function toggleRadio() {
     audio.pause(); audio.removeAttribute('src'); audio.load();
     icon.textContent='▶'; label.textContent='Escuchar en vivo'; _radioPlaying=false;
   } else {
+    // ── Parar video hero si está reproduciendo ──
+    if (typeof heroStopLive === 'function' && typeof _heroLivePlaying !== 'undefined' && _heroLivePlaying) {
+      heroStopLive();
+    }
     icon.textContent='⏳'; label.textContent='Conectando...';
     loadStream(audio);
     audio.play()
