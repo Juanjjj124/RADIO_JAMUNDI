@@ -44,7 +44,7 @@ function dbDelete(id) { localStorage.setItem(DB_KEY, JSON.stringify(dbGetAll().f
 const CATS_DB = ["NOTICIAS", "POLÍTICA", "DEPORTES", "CULTURA"];
 
 // ════════════════════════════════════════════════════
-//  BASE DE DATOS DE VIDEOS
+//  BASE DE DATOS DE VIDEOS (YouTube)
 // ════════════════════════════════════════════════════
 const VIDEO_NEWS = [
   {id:'v1',titulo:"Colombia clasifica al Mundial 2026: la noche que paralizó al país",categoria:"DEPORTES",autor:"Redacción Deportes",fecha:"4 de septiembre de 2025",youtubeId:"Cz2xm4VWzJE",link:"https://www.youtube.com/watch?v=Cz2xm4VWzJE",resumen:"Resumen y goles del partido Colombia vs Bolivia. La Selección goleó 3-0 y selló su clasificación al Mundial 2026."},
@@ -63,12 +63,6 @@ const VIDEO_NEWS = [
 
 // ════════════════════════════════════════════════════
 //  CONTROL DE VIDEO — UN SOLO VIDEO A LA VEZ
-//
-//  Estrategia: el iframe nace con src="" (no carga nada).
-//  Al hacer clic en ▶ se inyecta el src con autoplay=1.
-//  Al detener se borra el src → el video muere por completo.
-//  La clase .vcard_playing en el wrapper controla
-//  via CSS qué se ve: miniatura vs iframe.
 // ════════════════════════════════════════════════════
 let _activeVideoId = null;
 
@@ -87,17 +81,8 @@ function _pauseActive() {
 
 function toggleVideoCard(videoId, e) {
   if (e) e.stopPropagation();
-
-  // Si ya estaba reproduciendo este → detener
-  if (_activeVideoId === videoId) {
-    _pauseActive();
-    return;
-  }
-
-  // Detener el que estaba activo (si había alguno)
+  if (_activeVideoId === videoId) { _pauseActive(); return; }
   _pauseActive();
-
-  // Reproducir el nuevo
   const iframe = document.getElementById('vframe_' + videoId);
   if (iframe) {
     iframe.src = iframe.getAttribute('data-src') + '&autoplay=1';
@@ -106,27 +91,20 @@ function toggleVideoCard(videoId, e) {
   }
   const wrap = document.getElementById('vcardwrap_' + videoId);
   if (wrap) wrap.classList.add('vcard_playing');
-
   _activeVideoId = videoId;
 }
 
 // ════════════════════════════════════════════════════
-//  HELPER: genera el HTML de una tarjeta de video
+//  HELPER: genera tarjeta de video para el carrusel
 // ════════════════════════════════════════════════════
 function _videoCardHTML(v) {
   return `
     <div class="rj_vcard">
-
-      <!-- ÁREA DE VIDEO (16:9) -->
       <div class="rj_vcard_video" id="vcardwrap_${v.id}">
-
-        <!-- Miniatura -->
         <img class="rj_vcard_thumb"
              src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg"
              alt="${v.titulo}"
              onerror="this.style.display='none'">
-
-        <!-- iframe: src vacío hasta que el usuario haga clic -->
         <iframe
           id="vframe_${v.id}"
           src=""
@@ -136,20 +114,14 @@ function _videoCardHTML(v) {
           allowfullscreen
           style="position:absolute;inset:0;width:100%;height:100%;border:none;opacity:0;pointer-events:none;transition:opacity .3s;">
         </iframe>
-
-        <!-- Overlay con botón ▶ -->
-        <div class="rj_vcard_play_overlay"
-             onclick="toggleVideoCard('${v.id}', event)">
+        <div class="rj_vcard_play_overlay" onclick="toggleVideoCard('${v.id}', event)">
           <div class="rj_vcard_play_btn">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <polygon points="5,3 18,10 5,17" fill="white"/>
             </svg>
           </div>
         </div>
-
       </div>
-
-      <!-- CUERPO DE LA TARJETA -->
       <div class="rj_vcard_body" onclick="openVideoArticle('${v.id}')">
         <div class="rj_vcard_cat">${v.categoria}</div>
         <div class="rj_vcard_title">${v.titulo}</div>
@@ -160,19 +132,13 @@ function _videoCardHTML(v) {
           LEER NOTA COMPLETA &rarr;
         </a>
       </div>
-
     </div>`;
 }
 
 // ════════════════════════════════════════════════════
-//  SECCIÓN NOTICIAS EN VIDEO — Render
-//  sufijo: '' = home | 'Noticias' | 'Deportes' | etc.
+//  ÍNDICES de carrusel por sección
 // ════════════════════════════════════════════════════
-
-// Índices independientes por sección
 const _vIdx = { '': 0, Noticias: 0, Deportes: 0, Cultura: 0, Politica: 0 };
-
-// Mapeo de categoría DB → sufijo de sección
 const _catToSuffix = {
   'NOTICIAS': 'Noticias',
   'DEPORTES': 'Deportes',
@@ -180,8 +146,10 @@ const _catToSuffix = {
   'POLÍTICA': 'Politica'
 };
 
+// ════════════════════════════════════════════════════
+//  RENDER SECCIÓN DE VIDEOS (HOME y categorías)
+// ════════════════════════════════════════════════════
 function renderVideoSection(filterCat) {
-  // Determinar sufijo e IDs de elementos
   const suffix  = filterCat ? (_catToSuffix[filterCat] || '') : '';
   const gridId  = 'videoGrid'    + suffix;
   const sectId  = 'videoSection' + suffix;
@@ -192,10 +160,8 @@ function renderVideoSection(filterCat) {
   const countEl = document.getElementById(countId);
   if (!section || !grid) return;
 
-  // Pausar el video activo al re-renderizar
   _pauseActive();
 
-  // Filtrar videos
   const videos = filterCat
     ? VIDEO_NEWS.filter(v => v.categoria === filterCat)
     : VIDEO_NEWS;
@@ -214,7 +180,7 @@ function renderVideoSection(filterCat) {
 }
 
 // ════════════════════════════════════════════════════
-//  CARRUSEL DE VIDEOS — Navegación
+//  NAVEGACIÓN CARRUSEL DE VIDEOS
 // ════════════════════════════════════════════════════
 function videoCarouselScroll(dir, suffix) {
   if (suffix === undefined) suffix = '';
@@ -236,32 +202,22 @@ function videoCarouselScroll(dir, suffix) {
 
   const prev = document.getElementById(prevId);
   const next = document.getElementById(nextId);
-  if (prev) prev.style.opacity = _vIdx[suffix] === 0       ? '0.35' : '1';
-  if (next) next.style.opacity = _vIdx[suffix] >= maxIdx   ? '0.35' : '1';
+  if (prev) prev.style.opacity = _vIdx[suffix] === 0     ? '0.35' : '1';
+  if (next) next.style.opacity = _vIdx[suffix] >= maxIdx ? '0.35' : '1';
 }
 
 // ════════════════════════════════════════════════════
-//  RENDERIZADO DINÁMICO
+//  RENDERIZADO PRINCIPAL
 // ════════════════════════════════════════════════════
 function renderHome() {
   const todos = dbGetAll();
 
-  // ── HERO ──
-  const heroFeat = document.getElementById('heroFeaturedNews');
-  if (heroFeat && todos.length > 0) {
-    const a = todos[0];
-    heroFeat.onclick = () => openArticle(a.id);
-    heroFeat.innerHTML = `
-      <img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'">
-      <div class="rj_hero_big_overlay"></div>
-      <span class="rj_hero_big_cat">${a.categoria}</span>
-      <div class="rj_hero_big_body"><h2 class="rj_hero_big_title">${a.titulo}</h2></div>`;
-  }
+  // ── HERO izquierdo = reproductor estático en HTML, no se toca ──
 
   // ── SIDEBAR ──
   const side = document.getElementById('heroSide');
   if (side) {
-    side.innerHTML = todos.slice(1,4).map(a => `
+    side.innerHTML = todos.slice(0,4).map(a => `
       <div class="rj_side_item" onclick="openArticle(${a.id})">
         <div class="rj_side_img"><img src="${a.imagen}" alt="${a.titulo}" onerror="this.src='radio jamundi logo.png'"></div>
         <div class="rj_side_body">
@@ -355,6 +311,7 @@ function renderHome() {
 function openArticle(id) {
   const art = dbGetById(id);
   if (!art) { alert('Artículo no encontrado. ID: ' + id); return; }
+  if (typeof heroStopLive === 'function') heroStopLive();
   _pauseActive();
   const vis = [...document.querySelectorAll('.homePage,.page_cat')].find(el => el.offsetParent !== null);
   sessionStorage.setItem('paginaAnterior', vis ? vis.id || 'homePage' : 'homePage');
@@ -405,6 +362,7 @@ function openArticle(id) {
 function openVideoArticle(videoId) {
   const vid = VIDEO_NEWS.find(v => v.id === videoId);
   if (!vid) { alert('Video no encontrado.'); return; }
+  if (typeof heroStopLive === 'function') heroStopLive();
   _pauseActive();
   const vis = [...document.querySelectorAll('.homePage,.page_cat')].find(el => el.offsetParent !== null);
   sessionStorage.setItem('paginaAnterior', vis ? vis.id || 'homePage' : 'homePage');
@@ -489,12 +447,13 @@ function mostrarCat(cat) {
 //  NAVEGACIÓN
 // ════════════════════════════════════════════════════
 function showHome(seccion) {
+  if (typeof heroStopLive === 'function') heroStopLive();
   _pauseActive();
   document.querySelectorAll('.homePage,.page_cat,#articlePage,#adminPage').forEach(el => el.style.display = 'none');
 
   if (!seccion) {
     document.querySelector('.homePage').style.display = 'block';
-    renderVideoSection(); // sin filtro → todos los videos en HOME
+    renderVideoSection();
     return;
   }
 
@@ -502,7 +461,6 @@ function showHome(seccion) {
   const el = document.getElementById(pageMap[seccion]);
   if (el) el.style.display = 'block';
 
-  // Renderizar videos filtrados por categoría dentro de la página
   const catMap = { noticias:'NOTICIAS', deportes:'DEPORTES', cultura:'CULTURA', politica:'POLÍTICA' };
   if (catMap[seccion]) renderVideoSection(catMap[seccion]);
 }
@@ -700,6 +658,24 @@ function rjToast(msg, tipo='ok') {
 }
 
 // ════════════════════════════════════════════════════
+//  HLS STREAM LOADER
+// ════════════════════════════════════════════════════
+function loadStream(audioEl) {
+  var url = 'https://streaming.totalmedios.com.co/live/chontico/index.m3u8';
+  if (audioEl.canPlayType('application/vnd.apple.mpegurl')) {
+    audioEl.src = url; audioEl.load();
+  } else if (window.Hls && Hls.isSupported()) {
+    if (audioEl._hls) { audioEl._hls.destroy(); }
+    var hls = new Hls({ enableWorker: false });
+    hls.loadSource(url);
+    hls.attachMedia(audioEl);
+    audioEl._hls = hls;
+  } else {
+    audioEl.src = url; audioEl.load();
+  }
+}
+
+// ════════════════════════════════════════════════════
 //  RADIO PLAYER
 // ════════════════════════════════════════════════════
 var _radioPlaying = false;
@@ -712,7 +688,7 @@ function toggleRadio() {
     icon.textContent='▶'; label.textContent='Escuchar en vivo'; _radioPlaying=false;
   } else {
     icon.textContent='⏳'; label.textContent='Conectando...';
-    audio.src='https://icecast.radiojamundi.com/jamundi.mp3'; audio.load();
+    loadStream(audio);
     audio.play()
       .then(()=>{ icon.textContent='⏹'; label.textContent='En vivo · Transmitiendo'; _radioPlaying=true; })
       .catch(()=>{ icon.textContent='▶'; label.textContent='Error · Reintentar'; _radioPlaying=false; });
@@ -721,12 +697,10 @@ function toggleRadio() {
 
 // ════════════════════════════════════════════════════
 //  CSS DE VIDEOS — inyectado dinámicamente
-//  (así no necesitas tocar css.css)
 // ════════════════════════════════════════════════════
 (function injectVideoCSS() {
   const style = document.createElement('style');
   style.textContent = `
-    /* ── BADGE VIDEO ── */
     .rj_vbadge {
       background: #e3000f;
       color: #fff;
@@ -738,8 +712,6 @@ function toggleRadio() {
       margin-left: 10px;
       vertical-align: middle;
     }
-
-    /* ── TARJETA ── */
     .rj_vcard {
       flex: 0 0 280px;
       background: #fff;
@@ -750,8 +722,6 @@ function toggleRadio() {
       transition: box-shadow .2s;
     }
     .rj_vcard:hover { box-shadow: 0 4px 16px rgba(0,0,0,.18); }
-
-    /* ── ÁREA DE VIDEO (16:9) ── */
     .rj_vcard_video {
       position: relative;
       width: 100%;
@@ -766,13 +736,9 @@ function toggleRadio() {
       object-fit: cover;
       transition: opacity .3s;
     }
-
-    /* Estado reproduciendo: oculta miniatura y overlay, muestra iframe */
-    .rj_vcard_video.vcard_playing .rj_vcard_thumb         { opacity: 0; pointer-events: none; }
-    .rj_vcard_video.vcard_playing .rj_vcard_play_overlay  { opacity: 0; pointer-events: none; }
-    .rj_vcard_video.vcard_playing iframe                  { opacity: 1 !important; pointer-events: all !important; }
-
-    /* ── OVERLAY ▶ ── */
+    .rj_vcard_video.vcard_playing .rj_vcard_thumb        { opacity: 0; pointer-events: none; }
+    .rj_vcard_video.vcard_playing .rj_vcard_play_overlay { opacity: 0; pointer-events: none; }
+    .rj_vcard_video.vcard_playing iframe                 { opacity: 1 !important; pointer-events: all !important; }
     .rj_vcard_play_overlay {
       position: absolute;
       inset: 0;
@@ -793,14 +759,16 @@ function toggleRadio() {
     }
     .rj_vcard:hover .rj_vcard_play_btn { transform: scale(1.08); }
     .rj_vcard_play_btn svg { margin-left: 4px; }
-
-    /* ── CUERPO ── */
     .rj_vcard_body     { padding: 12px 14px 14px; }
     .rj_vcard_cat      { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #e3000f; margin-bottom: 5px; }
     .rj_vcard_title    { font-size: 15px; font-weight: 700; line-height: 1.3; color: #111; margin-bottom: 6px; }
     .rj_vcard_meta     { font-size: 11px; color: #888; margin-bottom: 8px; }
     .rj_vcard_readmore { font-size: 11px; font-weight: 700; letter-spacing: .5px; color: #e3000f; text-decoration: none; text-transform: uppercase; }
     .rj_vcard_readmore:hover { text-decoration: underline; }
+    .art_video_wrap { margin: 20px 0; }
+    .art_video_label { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #e3000f; text-transform: uppercase; margin-bottom: 8px; }
+    .art_video_frame { position: relative; padding-top: 56.25%; background: #000; border-radius: 6px; overflow: hidden; }
+    .art_video_frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
   `;
   document.head.appendChild(style);
 })();
@@ -811,39 +779,31 @@ function toggleRadio() {
 function addSwipe(trackId, scrollFn, suffix) {
   const track = document.getElementById(trackId);
   if (!track) return;
-  let startX = 0;
-  let startY = 0;
-  let locked = null; // 'h' horizontal | 'v' vertical
-
+  let startX = 0, startY = 0, locked = null;
   track.addEventListener('touchstart', e => {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     locked = null;
   }, { passive: true });
-
   track.addEventListener('touchmove', e => {
     if (!locked) {
       const dx = Math.abs(e.touches[0].clientX - startX);
       const dy = Math.abs(e.touches[0].clientY - startY);
       locked = dx > dy ? 'h' : 'v';
     }
-    // Si es horizontal, prevenir scroll de página para no interferir
     if (locked === 'h') e.preventDefault();
   }, { passive: false });
-
   track.addEventListener('touchend', e => {
-    if (locked !== 'h') return; // fue scroll vertical, ignorar
+    if (locked !== 'h') return;
     const diff = startX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) < 40) return; // tap, ignorar
+    if (Math.abs(diff) < 40) return;
     if (suffix !== undefined) scrollFn(diff > 0 ? 1 : -1, suffix);
     else scrollFn(diff > 0 ? 1 : -1);
   }, { passive: true });
 }
 
 function initSwipes() {
-  // Carrusel de noticias
   addSwipe('allNewsGrid', carouselScroll);
-  // Carrusel de videos — home y todas las categorías
   addSwipe('videoGrid',          videoCarouselScroll, '');
   addSwipe('videoGridNoticias',  videoCarouselScroll, 'Noticias');
   addSwipe('videoGridDeportes',  videoCarouselScroll, 'Deportes');
@@ -860,4 +820,4 @@ document.addEventListener('DOMContentLoaded', () => {
     carouselScroll(0);
     initSwipes();
   }, 150);
-});gti
+});
